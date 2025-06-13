@@ -5,9 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parabolas - Conics Explorer</title>
     <!-- TODO: Parabolas are currently outside the view range and need to be corrected -->
+    <!-- The current scaling and coordinate system needs adjustment to properly display the parabolas within the visible viewport -->
+    <!-- ATTEMPTED FIX: Implemented adaptive coordinate system based on parameter 'a', but parabolas still not displaying properly -->
+    <!-- DETAILED ANALYSIS: 
+         - Issue: For equations like y = x²/a where 'a' is large (e.g., 1024), parabolas become extremely flat
+         - Root cause: Mathematical coordinate system doesn't match SVG viewport scaling
+         - What was tried:
+           * Adaptive ranges: Small a (≤100): x:[-10,10] y:[0,25], Medium a (≤625): x:[-25,25] y:[0,50], Large a (>625): x:[-50,50] y:[0,100]
+           * Dynamic axis labeling with actual coordinate values
+           * Increased curve resolution to 200 points
+           * Modified intersection calculation algorithm
+         - Potential remaining issues:
+           * SVG Y-axis inversion (mathematical Y+ up vs SVG Y+ down)
+           * Lattice intersection algorithm may not handle large 'a' values correctly
+           * Grid coordinate transformation between mathematical and pixel space
+           * Wide cards (a > 625) may need logarithmic or square-root scaling instead of linear
+         - Next steps to try:
+           * Debug by adding console.log for actual parabola points generated
+           * Test with simpler cases (a=1, a=4) to verify basic functionality
+           * Consider different scaling approaches (log scale, normalized coordinates)
+           * Verify lattice intersection mathematics for edge cases
+    -->
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="js/app.js?v=2" defer></script>
+    <script src="js/app.js?v=5" defer></script>
 </head>
 <body>
     <div id="app">

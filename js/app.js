@@ -4,6 +4,69 @@ console.log('Loading app.js - D3.js/SVG version');
 
 // TODO: Parabolas are currently outside the view range and need to be corrected
 // The current scaling and coordinate system needs adjustment to properly display the parabolas within the visible viewport
+//
+// CORE DESIGN GOALS:
+// 1. TARGET: ~29 lattice intersections per graph (meaningful mathematical content)
+// 2. CARD SCALING: Scale graph to fit card dimensions (1/2 page wide)
+//    - Narrow cards: can be tall for steep parabolas
+//    - Wide cards: can be wide for flat parabolas, but not too high
+// 3. COMPLETE PARABOLA: Show bottom of parabola (vertex at origin) - currently clipped off
+// 4. ADAPTIVE RANGES: Calculate coordinate ranges to achieve target intersection count
+//
+// ATTEMPTED FIXES ANALYSIS:
+// - First attempt: Arbitrary small ranges (x:[-10,10], y:[0,25]) - lost most points
+// - Second attempt: Mathematics-driven ranges - graph too small, still clipping parabola bottom
+// - Current issue: Need to work backwards from target intersection count to determine optimal ranges
+//
+// REQUIRED LOGIC:
+// 1. For equation y = x²/a, find range that gives ~29 integer intersection points
+// 2. Ensure parabola vertex (0,0) is always visible
+// 3. Scale coordinate system to fit card dimensions while maintaining aspect ratio
+// 4. Adjust card height/width based on parabola shape (narrow vs wide)
+//
+// DETAILED TECHNICAL ANALYSIS:
+// Problem: Parabola y = x²/a becomes increasingly flat as 'a' increases
+// Example: For a=1024, at x=±32, y = 1024/1024 = 1 (very flat curve)
+// 
+// Current Implementation Issues:
+// 1. COORDINATE TRANSFORMATION: SVG pixel coordinates vs mathematical coordinates
+//    - SVG: origin (0,0) top-left, Y increases downward
+//    - Math: origin typically center, Y increases upward
+//    - Current mapping: px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin))
+//    - Current mapping: py = topMargin + effectiveHeight - y * (effectiveHeight / yMax)
+//
+// 2. LATTICE INTERSECTION ALGORITHM: 
+//    - Uses: step = Math.sqrt(a / getSquareFreePart(a))
+//    - May not generate correct integer lattice points for all 'a' values
+//    - Integer check: Number.isInteger(x) && Number.isInteger(y) may fail due to floating point precision
+//    - Range constraints may eliminate valid intersections
+//
+// 3. SCALING PROBLEMS:
+//    - Linear scaling inadequate for wide range of 'a' values (1 to 3136)
+//    - Large 'a' values produce curves too flat to visualize effectively
+//    - Small 'a' values may produce curves too steep/narrow
+//
+// 4. D3.js CURVE INTERPOLATION:
+//    - Using d3.curveCardinal which may smooth out important features
+//    - Step size of (xMax-xMin)/200 may miss critical points
+//
+// DEBUGGING STEPS TAKEN:
+// - Added console.log to verify D3.js loading ✓
+// - Added cache-busting parameter to prevent JS conflicts ✓
+// - Implemented adaptive coordinate ranges (didn't solve core issue)
+// - Modified axis labeling to reflect actual ranges
+//
+// POTENTIAL SOLUTIONS TO TRY:
+// 1. Add debug logging for generated points: console.log(points, intersections)
+// 2. Test with simple cases first (a=1, a=4, a=9) to verify basic functionality
+// 3. Use logarithmic or square-root scaling for large 'a' values
+// 4. Implement separate scaling strategies per card type
+// 5. Fix floating-point precision issues in intersection detection
+// 6. Use d3.curveLinear instead of curveCardinal for more accurate representation
+// 7. Consider viewport-relative scaling instead of fixed coordinate ranges
+// 8. Verify mathematical correctness of lattice intersection formula
+//
+// STATUS: TODO - Additional debugging and algorithm refinement needed
 
 // Function to calculate optimal SVG dimensions based on card type and available space
 function calculateSVGDimensions(cardType, containerElement = null) {
@@ -66,6 +129,11 @@ function createSVGLattice(svg, width, height) {
 
 // Function to create SVG axes with tick marks and labels
 function createSVGAxes(svg, width, height) {
+    // FAILED ATTEMPT: Added yMin parameter to show vertex at origin
+    // function createSVGAxes(svg, width, height, xMin, xMax, yMin, yMax)
+    // This failed because it didn't maintain the 29+ intersection requirement
+    // Reverting to original function signature for now
+    
     const leftMargin = 35;
     const bottomMargin = 25;
     const topMargin = 10;
@@ -164,61 +232,76 @@ function calculateParabolaLatticeIntersections(a, width, height) {
     const effectiveWidth = width - leftMargin;
     const effectiveHeight = height - bottomMargin - topMargin;
     
-    // Draw the parabola with full range
-    const xMin = -50;
-    const xMax = 50;
-    for (let x = xMin; x <= xMax; x += 0.5) {
+    // FAILED ATTEMPT: Tried to work backwards from target intersection count (~29 points)
+    // const targetK = 14; // Target ~29 intersections (14 positive + origin + 14 negative)
+    // This approach failed because it didn't maintain the minimum 29 intersections requirement
+    // Reverting to previous mathematics-driven ranges approach for now
+    // TODO: Need to implement proper logic to ensure 29+ intersections per graph
+    
+    // Calculate proper mathematical ranges based on lattice intersections
+    // For y = x²/a, integer intersections occur when x = k*√a for integer k
+    const sqrtA = Math.sqrt(a);
+    
+    // Find the maximum k that gives reasonable y values
+    let maxK = 1;
+    while ((maxK * sqrtA) * (maxK * sqrtA) / a <= 200) {
+        maxK++;
+    }
+    maxK = Math.max(maxK - 1, 1); // Back off one step
+    
+    // Set coordinate ranges based on actual lattice points
+    const xMin = -maxK * sqrtA * 1.2; // Add 20% padding
+    const xMax = maxK * sqrtA * 1.2;
+    const yMax = (maxK * sqrtA) * (maxK * sqrtA) / a * 1.5; // Add 50% padding
+    
+    // Generate parabola points for smooth curve
+    const stepSize = (xMax - xMin) / 400; // High resolution
+    for (let x = xMin; x <= xMax; x += stepSize) {
         const y = (x * x) / a;
-        if (y >= 0 && y <= 100) {
+        if (y >= 0 && y <= yMax) {
             const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
-            const py = topMargin + effectiveHeight - y * (effectiveHeight / 100);
+            const py = topMargin + effectiveHeight - y * (effectiveHeight / yMax);
             points.push({ x: px, y: py, origX: x, origY: y });
         }
     }
     
-    // Mathematical formula for lattice intersections
-    // For y = x²/a to have integer solutions, we need x² ≡ 0 (mod a)
-    function getSquareFreePart(n) {
-        let result = 1;
-        for (let i = 2; i * i <= n; i++) {
-            let count = 0;
-            while (n % i === 0) {
-                n /= i;
-                count++;
-            }
-            if (count % 2 === 1) {
-                result *= i;
-            }
-        }
-        if (n > 1) result *= n;
-        return result;
-    }
-    
-    const step = Math.sqrt(a / getSquareFreePart(a));
-    const maxK = Math.floor(100 / step);
-    
+    // Calculate actual lattice intersections mathematically
+    // For y = x²/a to have integer solutions, x must be of form k*√a where k*√a is integer
     for (let k = -maxK; k <= maxK; k++) {
-        const x = k * step;
+        const x = k * sqrtA;
         const y = (x * x) / a;
-        if (Number.isInteger(x) && Number.isInteger(y) && y >= 0 && y <= 100) {
-            const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
-            const py = topMargin + effectiveHeight - y * (effectiveHeight / 100);
-            intersections.push({ x: px, y: py, origX: x, origY: y });
+        
+        // Check if both x and y are integers (within floating point precision)
+        if (Math.abs(x - Math.round(x)) < 1e-10 && Math.abs(y - Math.round(y)) < 1e-10) {
+            const roundedX = Math.round(x);
+            const roundedY = Math.round(y);
+            
+            if (roundedX >= xMin && roundedX <= xMax && roundedY >= 0 && roundedY <= yMax) {
+                const px = leftMargin + (roundedX - xMin) * (effectiveWidth / (xMax - xMin));
+                const py = topMargin + effectiveHeight - roundedY * (effectiveHeight / yMax);
+                intersections.push({ x: px, y: py, origX: roundedX, origY: roundedY });
+            }
         }
     }
+    
     return { points, intersections, xMin, xMax };
 }
 
 // Function to draw SVG parabola and label intersections
 function drawSVGParabola(svg, a, color, width, height) {
-    const { points, intersections } = calculateParabolaLatticeIntersections(a, width, height);
+    const { points, intersections, xMin, xMax } = calculateParabolaLatticeIntersections(a, width, height);
+    // FAILED ATTEMPT: Added yMin, yMax return values
+    // const { points, intersections, xMin, xMax, yMin, yMax } = calculateParabolaLatticeIntersections(a, width, height);
+    // This failed because it didn't maintain the 29+ intersection requirement
+    // Reverting to previous return structure for now
+    
     if (points.length === 0) return { points: [], intersections: [] };
     
     // Create parabola path
     const line = d3.line()
         .x(d => d.x)
         .y(d => d.y)
-        .curve(d3.curveCardinal);
+        .curve(d3.curveLinear); // Use linear interpolation for mathematical accuracy
     
     const parabolaGroup = svg.append('g').attr('class', 'parabola');
     
@@ -300,6 +383,11 @@ function displayFunctionCards(aValues, cardType = 'narrow', container = null) {
         
         // Draw elements
         let intersections = [];
+        // FAILED ATTEMPT: Added coordinate ranges with yMin/yMax support
+        // coordinateRanges = { xMin: result.xMin, xMax: result.xMax, yMin: result.yMin, yMax: result.yMax };
+        // createSVGAxes(svg, svgWidth, svgHeight, coordinateRanges.xMin, coordinateRanges.xMax, coordinateRanges.yMin, coordinateRanges.yMax);
+        // This failed because it didn't maintain the 29+ intersection requirement
+        // Reverting to original function calls for now
         try {
             createSVGLattice(svg, svgWidth, svgHeight);
             createSVGAxes(svg, svgWidth, svgHeight);
