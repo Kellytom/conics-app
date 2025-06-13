@@ -97,19 +97,18 @@ function calculateSVGDimensions(cardType, containerElement = null) {
 }
 
 // Function to create SVG lattice grid
-function createSVGLattice(svg, width, height) {
+function createSVGLattice(svg, width, height, xMin = -50, xMax = 50, yMin = -10, yMax = 100) {
     const leftMargin = 35;
     const bottomMargin = 25;
     const topMargin = 10;
     const effectiveWidth = width - leftMargin;
     const effectiveHeight = height - bottomMargin - topMargin;
-    
     const gridGroup = svg.append('g').attr('class', 'grid');
     
     // Vertical grid lines
-    const gridSpacingX = effectiveWidth / 20;
-    for (let i = 0; i <= 20; i++) {
-        const x = leftMargin + (i * gridSpacingX);
+    const gridLinesX = 20;
+    for (let i = 0; i <= gridLinesX; i++) {
+        const x = leftMargin + (i * effectiveWidth / gridLinesX);
         gridGroup.append('line')
             .attr('x1', x).attr('y1', topMargin)
             .attr('x2', x).attr('y2', height - bottomMargin)
@@ -117,9 +116,9 @@ function createSVGLattice(svg, width, height) {
     }
     
     // Horizontal grid lines
-    const gridSpacingY = effectiveHeight / 15;
-    for (let i = 0; i <= 15; i++) {
-        const y = topMargin + (i * gridSpacingY);
+    const gridLinesY = 15;
+    for (let i = 0; i <= gridLinesY; i++) {
+        const y = topMargin + effectiveHeight - (i * effectiveHeight / gridLinesY);
         gridGroup.append('line')
             .attr('x1', leftMargin).attr('y1', y)
             .attr('x2', width).attr('y2', y)
@@ -128,26 +127,20 @@ function createSVGLattice(svg, width, height) {
 }
 
 // Function to create SVG axes with tick marks and labels
-function createSVGAxes(svg, width, height) {
-    // FAILED ATTEMPT: Added yMin parameter to show vertex at origin
-    // function createSVGAxes(svg, width, height, xMin, xMax, yMin, yMax)
-    // This failed because it didn't maintain the 29+ intersection requirement
-    // Reverting to original function signature for now
-    
+function createSVGAxes(svg, width, height, xMin = -50, xMax = 50, yMin = -10, yMax = 100) {
     const leftMargin = 35;
     const bottomMargin = 25;
     const topMargin = 10;
     const effectiveWidth = width - leftMargin;
     const effectiveHeight = height - bottomMargin - topMargin;
-    
     const axesGroup = svg.append('g').attr('class', 'axes');
-    
+
     // X and Y axes
+    const yZero = topMargin + effectiveHeight - (0 - yMin) * (effectiveHeight / (yMax - yMin));
     axesGroup.append('line')
-        .attr('x1', 0).attr('y1', height - bottomMargin)
-        .attr('x2', width).attr('y2', height - bottomMargin)
+        .attr('x1', 0).attr('y1', yZero)
+        .attr('x2', width).attr('y2', yZero)
         .attr('stroke', '#888').attr('stroke-width', 1.5);
-        
     axesGroup.append('line')
         .attr('x1', leftMargin).attr('y1', topMargin)
         .attr('x2', leftMargin).attr('y2', height - bottomMargin)
@@ -156,12 +149,11 @@ function createSVGAxes(svg, width, height) {
     // Axis labels
     axesGroup.append('text')
         .attr('x', width - 15)
-        .attr('y', height - bottomMargin - 5)
+        .attr('y', yZero - 5)
         .attr('fill', '#222')
         .attr('font-size', '12px')
         .attr('font-weight', 'bold')
         .text('x');
-        
     axesGroup.append('text')
         .attr('x', leftMargin + 3)
         .attr('y', topMargin + 10)
@@ -171,51 +163,45 @@ function createSVGAxes(svg, width, height) {
         .text('y');
 
     // X-axis ticks and labels
-    const xTickSpacing = effectiveWidth / 12;
-    for (let i = 1; i < 12; i++) {
+    const xTickCount = 12;
+    const xTickSpacing = effectiveWidth / (xTickCount - 1);
+    for (let i = 0; i < xTickCount; i++) {
         const x = leftMargin + (i * xTickSpacing);
-        
-        // Tick mark
+        const xValue = Math.round(xMin + (i * (xMax - xMin) / (xTickCount - 1)));
         axesGroup.append('line')
             .attr('x1', x)
-            .attr('y1', height - bottomMargin - 2)
+            .attr('y1', yZero - 4)
             .attr('x2', x)
-            .attr('y2', height - bottomMargin + 2)
+            .attr('y2', yZero + 4)
             .attr('stroke', '#888')
             .attr('stroke-width', 1);
-        
-        // Label
-        const xValue = Math.round(-50 + (i * 100 / 12));
         axesGroup.append('text')
             .attr('x', x)
-            .attr('y', height - bottomMargin + 15)
+            .attr('y', yZero + 16)
             .attr('fill', '#222')
-            .attr('font-size', '8px')
+            .attr('font-size', '9px')
             .attr('text-anchor', 'middle')
             .text(xValue);
     }
-    
+
     // Y-axis ticks and labels
-    const yTickSpacing = effectiveHeight / 8;
-    for (let i = 1; i < 8; i++) {
+    const yTickCount = 10;
+    const yTickSpacing = effectiveHeight / (yTickCount - 1);
+    for (let i = 0; i < yTickCount; i++) {
         const y = topMargin + effectiveHeight - (i * yTickSpacing);
-        
-        // Tick mark
+        const yValue = Math.round(yMin + (i * (yMax - yMin) / (yTickCount - 1)));
         axesGroup.append('line')
-            .attr('x1', leftMargin - 2)
+            .attr('x1', leftMargin - 4)
             .attr('y1', y)
-            .attr('x2', leftMargin + 2)
+            .attr('x2', leftMargin + 4)
             .attr('y2', y)
             .attr('stroke', '#888')
             .attr('stroke-width', 1);
-        
-        // Label
-        const yValue = Math.round(i * 100 / 8);
         axesGroup.append('text')
             .attr('x', leftMargin - 8)
             .attr('y', y + 3)
             .attr('fill', '#222')
-            .attr('font-size', '8px')
+            .attr('font-size', '9px')
             .attr('text-anchor', 'end')
             .text(yValue);
     }
@@ -252,39 +238,36 @@ function calculateParabolaLatticeIntersections(a, width, height) {
     // Set coordinate ranges based on actual lattice points
     const xMin = -maxK * sqrtA * 1.2; // Add 20% padding
     const xMax = maxK * sqrtA * 1.2;
+    const yMin = -10; // Allow y to go to -10
     const yMax = (maxK * sqrtA) * (maxK * sqrtA) / a * 1.5; // Add 50% padding
-    
+
     // Generate parabola points for smooth curve
     const stepSize = (xMax - xMin) / 400; // High resolution
     for (let x = xMin; x <= xMax; x += stepSize) {
         const y = (x * x) / a;
-        if (y >= 0 && y <= yMax) {
+        if (y >= yMin && y <= yMax) {
             const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
-            const py = topMargin + effectiveHeight - y * (effectiveHeight / yMax);
+            const py = topMargin + effectiveHeight - (y - yMin) * (effectiveHeight / (yMax - yMin));
             points.push({ x: px, y: py, origX: x, origY: y });
         }
     }
-    
+
     // Calculate actual lattice intersections mathematically
-    // For y = x²/a to have integer solutions, x must be of form k*√a where k*√a is integer
     for (let k = -maxK; k <= maxK; k++) {
         const x = k * sqrtA;
         const y = (x * x) / a;
-        
-        // Check if both x and y are integers (within floating point precision)
         if (Math.abs(x - Math.round(x)) < 1e-10 && Math.abs(y - Math.round(y)) < 1e-10) {
             const roundedX = Math.round(x);
             const roundedY = Math.round(y);
-            
-            if (roundedX >= xMin && roundedX <= xMax && roundedY >= 0 && roundedY <= yMax) {
+            if (roundedX >= xMin && roundedX <= xMax && roundedY >= yMin && roundedY <= yMax) {
                 const px = leftMargin + (roundedX - xMin) * (effectiveWidth / (xMax - xMin));
-                const py = topMargin + effectiveHeight - roundedY * (effectiveHeight / yMax);
+                const py = topMargin + effectiveHeight - (roundedY - yMin) * (effectiveHeight / (yMax - yMin));
                 intersections.push({ x: px, y: py, origX: roundedX, origY: roundedY });
             }
         }
     }
-    
-    return { points, intersections, xMin, xMax };
+
+    return { points, intersections, xMin, xMax, yMin, yMax };
 }
 
 // Function to draw SVG parabola and label intersections
@@ -388,14 +371,11 @@ function displayFunctionCards(aValues, cardType = 'narrow', container = null) {
         // createSVGAxes(svg, svgWidth, svgHeight, coordinateRanges.xMin, coordinateRanges.xMax, coordinateRanges.yMin, coordinateRanges.yMax);
         // This failed because it didn't maintain the 29+ intersection requirement
         // Reverting to original function calls for now
-        try {
-            createSVGLattice(svg, svgWidth, svgHeight);
-            createSVGAxes(svg, svgWidth, svgHeight);
-            const result = drawSVGParabola(svg, a, colors[idx % colors.length], svgWidth, svgHeight);
-            intersections = result.intersections || [];
-        } catch (error) {
-            console.error('Error creating SVG elements:', error);
-        }
+        const result = calculateParabolaLatticeIntersections(a, svgWidth, svgHeight);
+        createSVGLattice(svg, svgWidth, svgHeight, result.xMin, result.xMax, result.yMin, result.yMax);
+        createSVGAxes(svg, svgWidth, svgHeight, result.xMin, result.xMax, result.yMin, result.yMax);
+        const parabolaResult = drawSVGParabola(svg, a, colors[idx % colors.length], svgWidth, svgHeight);
+        intersections = parabolaResult.intersections || [];
         
         // Add formula and info
         const formula = document.createElement('div');
@@ -471,7 +451,8 @@ function init() {
     
     const narrowContainer = document.createElement('div');
     narrowContainer.id = 'narrowCards';
-    narrowContainer.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 40px;';
+    // Remove inline grid-template-columns, let CSS handle it
+    narrowContainer.style.cssText = 'display: grid; gap: 20px; margin-bottom: 40px;';
     functionCards.appendChild(narrowContainer);
     
     // Wide cards section
