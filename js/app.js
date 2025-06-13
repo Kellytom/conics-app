@@ -1,5 +1,7 @@
 // This file contains the main JavaScript code for the application. It generates the formulas for the conics, calculates the points that intersect the fractional integer lattice, and uses D3.js to visualize the grid lattice and the points on the parabola with crisp SVG graphics.
 
+console.log('Loading app.js - D3.js/SVG version');
+
 // TODO: Parabolas are currently outside the view range and need to be corrected
 // The current scaling and coordinate system needs adjustment to properly display the parabolas within the visible viewport
 
