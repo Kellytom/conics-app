@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circles - Conics Explorer</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script src="js/d3.min.js"></script>
+    <script src="js/common.js"></script>
 </head>
 <body>
     <div id="app">
@@ -12,15 +14,232 @@
             <a href="index.html" class="home-link">← Back to Home</a>
         </nav>
         <h1>⚪ Circles & Lattice Intersections</h1>
-        <div style="text-align: center; padding: 60px 20px; color: #666;">
-            <h2>🚧 Coming Soon</h2>
-            <p>Circle visualizations and lattice intersections are under development.</p>
-            <p>This page will feature interactive circle equations of the form:</p>
-            <div style="font-family: monospace; background: #f5f5f5; padding: 15px; margin: 20px auto; max-width: 150px; border-radius: 8px;">
-                x² + y² = r²
-            </div>
-            <p>Discover the perfect symmetry of circular geometry!</p>
+        
+        <div class="explanation">
+            <p>Circles are defined by the equation <code>x² + y² = r²</code> where <code>r</code> is the radius.</p>
+            <p>We explore integer radii that create perfect lattice intersections, forming the foundation for arc-based assemblies.</p>
+        </div>
+
+        <div class="card-container" id="circleCards">
+            <!-- Circle cards will be generated here -->
         </div>
     </div>
+
+    <script>
+        console.log('Loading circles.html');
+        
+        // Circle configurations with integer radii that have interesting lattice intersections
+        const circleConfigs = [
+            // Small circles with exact lattice points
+            { r: 1, color: '#e74c3c', title: 'Unit Circle' },
+            { r: 2, color: '#e74c3c', title: 'Small Circle' },
+            { r: 3, color: '#3498db', title: 'Medium Circle' },
+            { r: 4, color: '#3498db', title: 'Large Circle' },
+            { r: 5, color: '#9b59b6', title: 'Pythagorean Circle' },
+            
+            // Circles with known Pythagorean triples
+            { r: Math.sqrt(5), color: '#f39c12', title: '√5 Circle', label: 'r=√5' },
+            { r: Math.sqrt(8), color: '#f39c12', title: '√8 Circle', label: 'r=2√2' },
+            { r: Math.sqrt(10), color: '#f39c12', title: '√10 Circle', label: 'r=√10' },
+            { r: Math.sqrt(13), color: '#f39c12', title: '√13 Circle', label: 'r=√13' },
+            
+            // Larger circles
+            { r: 6, color: '#27ae60', title: 'Circle r=6' },
+            { r: 7, color: '#27ae60', title: 'Circle r=7' },
+            { r: 8, color: '#27ae60', title: 'Circle r=8' }
+        ];
+
+        function generateCircleCards() {
+            const container = document.getElementById('circleCards');
+            
+            circleConfigs.forEach((config, index) => {
+                const card = document.createElement('div');
+                card.className = 'card wide';
+                
+                const radiusDisplay = config.label || config.r.toString();
+                const equation = `x² + y² = ${Math.round(config.r * config.r * 100) / 100}`;
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${config.title}</h3>
+                        <div class="formula">${equation}</div>
+                        <div class="subtitle">r = ${radiusDisplay}</div>
+                    </div>
+                    <div class="card-content">
+                        <div class="svg-container" id="svg-container-${index}"></div>
+                        <div class="stats" id="stats-${index}">
+                            <div class="stat-item">
+                                <span class="stat-label">Lattice Points:</span>
+                                <span class="stat-value" id="lattice-count-${index}">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Circumference:</span>
+                                <span class="stat-value" id="circumference-${index}">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Area:</span>
+                                <span class="stat-value" id="area-${index}">-</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+                
+                // Create SVG visualization
+                setTimeout(() => createCircleVisualization(config, index), 100);
+            });
+        }
+
+        function createCircleVisualization(config, index) {
+            const container = document.getElementById(`svg-container-${index}`);
+            const { width, height } = calculateSVGDimensions('wide');
+            
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+            
+            // Calculate coordinate ranges
+            const margin = config.r * 0.5;
+            const range = config.r + margin;
+            const xMin = -range;
+            const xMax = range;
+            const yMin = -range;
+            const yMax = range;
+            
+            // Create grid and axes
+            createSVGLattice(svg, width, height, xMin, xMax, yMin, yMax);
+            createSVGAxes(svg, width, height, xMin, xMax, yMin, yMax);
+            
+            // Draw circle and calculate intersections
+            const result = drawSVGCircle(svg, config.r, config.color, width, height, xMin, xMax, yMin, yMax);
+            
+            // Update stats
+            updateCircleStats(config, result, index);
+        }
+
+        function drawSVGCircle(svg, radius, color, width, height, xMin, xMax, yMin, yMax) {
+            const leftMargin = 35;
+            const bottomMargin = 25;
+            const topMargin = 10;
+            const effectiveWidth = width - leftMargin;
+            const effectiveHeight = height - bottomMargin - topMargin;
+            
+            // Generate circle points
+            const points = [];
+            const latticePoints = [];
+            
+            // Generate smooth circle curve
+            const angleStep = Math.PI / 200;
+            for (let angle = 0; angle <= 2 * Math.PI + angleStep; angle += angleStep) {
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+                
+                if (x >= xMin && x <= xMax && y >= yMin && y <= yMax) {
+                    const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
+                    const py = topMargin + effectiveHeight - (y - yMin) * (effectiveHeight / (yMax - yMin));
+                    points.push({ x: px, y: py, origX: x, origY: y });
+                }
+            }
+            
+            // Find lattice intersections by checking all integer points within radius
+            const radiusSquared = radius * radius;
+            for (let x = Math.ceil(-radius); x <= Math.floor(radius); x++) {
+                for (let y = Math.ceil(-radius); y <= Math.floor(radius); y++) {
+                    const distSquared = x * x + y * y;
+                    
+                    // Check if point is exactly on the circle (within floating point precision)
+                    if (Math.abs(distSquared - radiusSquared) < 1e-10) {
+                        if (x >= xMin && x <= xMax && y >= yMin && y <= yMax) {
+                            const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
+                            const py = topMargin + effectiveHeight - (y - yMin) * (effectiveHeight / (yMax - yMin));
+                            latticePoints.push({ x: px, y: py, origX: x, origY: y });
+                        }
+                    }
+                }
+            }
+            
+            const circleGroup = svg.append('g').attr('class', 'circle');
+            
+            // Draw circle curve
+            if (points.length > 0) {
+                const line = d3.line()
+                    .x(d => d.x)
+                    .y(d => d.y)
+                    .curve(d3.curveLinear);
+                
+                circleGroup.append('path')
+                    .datum(points)
+                    .attr('d', line)
+                    .attr('fill', 'none')
+                    .attr('stroke', color)
+                    .attr('stroke-width', 2)
+                    .attr('stroke-linejoin', 'round')
+                    .attr('stroke-linecap', 'round');
+            }
+            
+            // Draw lattice intersection points
+            latticePoints.forEach(point => {
+                circleGroup.append('circle')
+                    .attr('cx', point.x)
+                    .attr('cy', point.y)
+                    .attr('r', 4)
+                    .attr('fill', color)
+                    .attr('stroke', 'white')
+                    .attr('stroke-width', 1.5);
+                
+                // Add coordinate labels
+                circleGroup.append('text')
+                    .attr('x', point.x + 8)
+                    .attr('y', point.y - 8)
+                    .attr('fill', '#333')
+                    .attr('font-size', '10px')
+                    .attr('font-weight', 'bold')
+                    .text(`(${point.origX},${point.origY})`);
+            });
+            
+            // Draw center point
+            const centerPx = leftMargin + (0 - xMin) * (effectiveWidth / (xMax - xMin));
+            const centerPy = topMargin + effectiveHeight - (0 - yMin) * (effectiveHeight / (yMax - yMin));
+            
+            circleGroup.append('circle')
+                .attr('cx', centerPx)
+                .attr('cy', centerPy)
+                .attr('r', 3)
+                .attr('fill', '#333')
+                .attr('stroke', 'white')
+                .attr('stroke-width', 1);
+            
+            return { points, latticePoints };
+        }
+
+        function updateCircleStats(config, result, index) {
+            // Update lattice count
+            document.getElementById(`lattice-count-${index}`).textContent = result.latticePoints.length;
+            
+            // Calculate circumference
+            const circumference = 2 * Math.PI * config.r;
+            document.getElementById(`circumference-${index}`).textContent = circumference.toFixed(2);
+            
+            // Calculate area
+            const area = Math.PI * config.r * config.r;
+            document.getElementById(`area-${index}`).textContent = area.toFixed(2);
+        }
+
+        // Function to calculate optimal SVG dimensions
+        function calculateSVGDimensions(cardType) {
+            const configs = {
+                narrow: { width: 500, height: 400 },
+                wide: { width: 600, height: 400 }
+            };
+            return configs[cardType] || configs.wide;
+        }
+
+        // Generate cards when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            generateCircleCards();
+        });
+    </script>
 </body>
 </html>

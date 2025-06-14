@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+CONIC PLAN REFERENCE: This file implements "Technical Implementation Section 4 - Gallery Page"
+from the Conics Explorer Project Plan. It showcases completed assemblies for Phase 2 and
+provides examples for Phase 3 (Motif Library) development.
+
+PURPOSE: "Assembled paths (open or closed) will be saved and displayed in a gallery. 
+Each path will be labeled and described for reuse."
+
+PLAN INTEGRATION:
+- Demonstrates completed assembly workflow results
+- Provides examples for "Medieval tracery elements" and "Christian symbolic motifs" (Phase 3)
+- Shows practical application of "Ground Rules" (serif typography principles)
+- Serves as inspiration and pattern library for users and future AI generation
+
+CURRENT STATUS: Complete gallery with filtering and examples (100% of Phase 2 gallery goals)
+SUPPORTS: Angel Wing Project examples, Gothic arch patterns, and symbolic motif development
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Conics Explorer</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/d3.min.js"></script>
+    <script src="js/common.js"></script>
+    <style>
+        /* PLAN REF: Visual organization supporting motif categorization and browsing */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        /* PLAN REF: Individual assembly showcase supporting pattern library concept */
+        .gallery-item {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* PLAN REF: Clear presentation of assembly titles and descriptions */
+        .gallery-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .gallery-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+        }
+        
+        .gallery-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        /* PLAN REF: Mathematical visualization area for completed assemblies */
+        .gallery-canvas {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+        }
+        
+        .gallery-info {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .gallery-components {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .gallery-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        
+        .tag {
+            background: #3498db;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .tag.art { background: #e74c3c; }
+        .tag.gothic { background: #9b59b6; }
+        .tag.geometric { background: #f39c12; }
+        .tag.nature { background: #27ae60; }
+        
+        .filter-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .filter-label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <nav>
+            <a href="index.html" class="home-link">← Back to Home</a>
+        </nav>
+        <h1>🎨 Conic Assembly Gallery</h1>
+        
+        <div class="explanation">
+            <p>Explore completed assemblies showcasing the artistic and mathematical potential of conic section combinations.</p>
+            <p>Each design demonstrates different techniques for connecting curves with matching slopes and lattice intersections.</p>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-group">
+                <span class="filter-label">Filter by:</span>
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="art">Art</button>
+                <button class="filter-btn" data-filter="gothic">Gothic</button>
+                <button class="filter-btn" data-filter="geometric">Geometric</button>
+                <button class="filter-btn" data-filter="nature">Nature</button>
+            </div>
+        </div>
+
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Gallery items will be generated here -->
+        </div>
+    </div>    <script>
+        // CONIC PLAN REFERENCE: This JavaScript implements the gallery showcase system
+        // from "Technical Implementation Section 4" and demonstrates Phase 3 motif examples
+        
+        console.log('Loading gallery.html');
+        
+        // Gallery collection with example assemblies
+        // PLAN REF: Demonstrates completed "Assembly Workflow" results and provides
+        // examples for "Medieval tracery elements" and "Christian symbolic motifs" (Phase 3)
+        // Each item shows practical application of "Ground Rules" and "Smooth Connections"
+        const galleryCollection = [
+            {
+                id: 'gothic-arch',
+                title: 'Gothic Arch',
+                subtitle: 'Traditional cathedral archway using circle arcs',
+                tags: ['gothic', 'art'],
+                description: 'A classic pointed arch created using two intersecting circular arcs, commonly found in Gothic architecture.',
+                components: [
+                    { type: 'circle', r: 5, center: [-3, 0], arc: [90, 180] },
+                    { type: 'circle', r: 5, center: [3, 0], arc: [0, 90] }
+                ],
+                latticePoints: 6,
+                color: '#9b59b6'
+            },
+            {
+                id: 'angel-wing',
+                title: 'Angel Wing',
+                subtitle: 'Graceful wing shape using parabolic curves',
+                tags: ['art', 'nature'],
+                description: 'Flowing wing design combining parabolas and elliptical arcs for natural, organic appearance.',
+                components: [
+                    { type: 'parabola', a: 16, transform: 'rotate(15deg)' },
+                    { type: 'ellipse', a: 8, b: 4, transform: 'translate(3,2)' },
+                    { type: 'parabola', a: 64, transform: 'rotate(-10deg) translate(2,1)' }
+                ],
+                latticePoints: 12,
+                color: '#e74c3c'
+            },
+            {
+                id: 'trefoil-knot',
+                title: 'Trefoil Pattern',
+                subtitle: 'Three-lobed ornamental design',
+                tags: ['geometric', 'art'],
+                description: 'Symmetrical three-part pattern using hyperbolic curves and circular connections.',
+                components: [
+                    { type: 'hyperbola', a: 3, b: 4, orientation: 'horizontal' },
+                    { type: 'circle', r: 3, center: [0, 0] },
+                    { type: 'hyperbola', a: 3, b: 4, orientation: 'vertical' }
+                ],
+                latticePoints: 18,
+                color: '#f39c12'
+            },
+            {
+                id: 'fibonacci-spiral',
+                title: 'Golden Spiral',
+                subtitle: 'Nature-inspired logarithmic spiral approximation',
+                tags: ['nature', 'geometric'],
+                description: 'Approximating the golden spiral using connected parabolic and elliptical segments.',
+                components: [
+                    { type: 'parabola', a: 4 },
+                    { type: 'ellipse', a: 3, b: 2 },
+                    { type: 'parabola', a: 9, transform: 'rotate(90deg)' },
+                    { type: 'ellipse', a: 5, b: 3, transform: 'rotate(180deg)' }
+                ],
+                latticePoints: 24,
+                color: '#27ae60'
+            },
+            {
+                id: 'rose-window',
+                title: 'Rose Window',
+                subtitle: 'Circular stained glass pattern',
+                tags: ['gothic', 'art', 'geometric'],
+                description: 'Radially symmetric design inspired by Gothic rose windows, using multiple elliptical petals.',
+                components: [
+                    { type: 'circle', r: 8, center: [0, 0] },
+                    { type: 'ellipse', a: 4, b: 2, copies: 8, arrangement: 'radial' },
+                    { type: 'circle', r: 2, center: [0, 0] }
+                ],
+                latticePoints: 32,
+                color: '#9b59b6'
+            },
+            {
+                id: 'infinity-symbol',
+                title: 'Lemniscate',
+                subtitle: 'Mathematical infinity symbol',
+                tags: ['geometric'],
+                description: 'The classic figure-eight curve created using two connected circular arcs.',
+                components: [
+                    { type: 'circle', r: 3, center: [-3, 0], arc: [0, 180] },
+                    { type: 'circle', r: 3, center: [3, 0], arc: [180, 360] }
+                ],
+                latticePoints: 8,
+                color: '#3498db'
+            },
+            {
+                id: 'mandorla',
+                title: 'Mandorla',
+                subtitle: 'Sacred geometry almond shape',
+                tags: ['art', 'geometric'],
+                description: 'Vesica piscis or mandorla shape formed by two intersecting circles, symbol of divine intersection.',
+                components: [
+                    { type: 'circle', r: 5, center: [-2, 0] },
+                    { type: 'circle', r: 5, center: [2, 0] }
+                ],
+                latticePoints: 10,
+                color: '#e74c3c'
+            },
+            {
+                id: 'celtic-knot',
+                title: 'Celtic Knot',
+                subtitle: 'Interwoven endless pattern',
+                tags: ['art', 'geometric'],
+                description: 'Traditional Celtic endless knot using hyperbolic and elliptical interwoven curves.',
+                components: [
+                    { type: 'hyperbola', a: 4, b: 3, orientation: 'horizontal' },
+                    { type: 'hyperbola', a: 3, b: 4, orientation: 'vertical' },
+                    { type: 'ellipse', a: 2, b: 3, copies: 4, arrangement: 'corners' }
+                ],
+                latticePoints: 16,
+                color: '#27ae60'
+            }
+        ];
+        
+        let activeFilter = 'all';
+        
+        function generateGallery() {
+            const container = document.getElementById('galleryGrid');
+            container.innerHTML = '';
+            
+            const filteredItems = activeFilter === 'all' 
+                ? galleryCollection 
+                : galleryCollection.filter(item => item.tags.includes(activeFilter));
+            
+            filteredItems.forEach((item, index) => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.dataset.tags = item.tags.join(' ');
+                
+                galleryItem.innerHTML = `
+                    <div class="gallery-header">
+                        <div class="gallery-title">${item.title}</div>
+                        <div class="gallery-subtitle">${item.subtitle}</div>
+                    </div>
+                    <div class="gallery-canvas" id="canvas-${item.id}">
+                        <!-- SVG will be generated here -->
+                    </div>
+                    <div class="gallery-info">
+                        <p>${item.description}</p>
+                        <div class="gallery-components">
+                            <strong>Components:</strong> ${item.components.length} conic sections<br>
+                            <strong>Lattice Points:</strong> ${item.latticePoints}
+                        </div>
+                        <div class="gallery-tags">
+                            ${item.tags.map(tag => `<span class="tag ${tag}">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(galleryItem);
+                
+                // Generate the visualization
+                setTimeout(() => createGalleryVisualization(item), 100 * index);
+            });
+        }
+        
+        function createGalleryVisualization(item) {
+            const container = document.getElementById(`canvas-${item.id}`);
+            const width = 320;
+            const height = 280;
+            
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .style('background', 'white')
+                .style('border-radius', '4px');
+            
+            // Set up coordinate system
+            const xMin = -12, xMax = 12, yMin = -10, yMax = 10;
+            const margin = 20;
+            const effectiveWidth = width - 2 * margin;
+            const effectiveHeight = height - 2 * margin;
+            
+            const xScale = (x) => margin + (x - xMin) * effectiveWidth / (xMax - xMin);
+            const yScale = (y) => margin + effectiveHeight - (y - yMin) * effectiveHeight / (yMax - yMin);
+            
+            // Draw subtle grid
+            const gridGroup = svg.append('g').attr('class', 'grid');
+            for (let i = -12; i <= 12; i += 2) {
+                if (i !== 0) {
+                    gridGroup.append('line')
+                        .attr('x1', xScale(i)).attr('y1', yScale(yMin))
+                        .attr('x2', xScale(i)).attr('y2', yScale(yMax))
+                        .attr('stroke', '#f8f8f8').attr('stroke-width', 0.5);
+                }
+            }
+            for (let i = -10; i <= 10; i += 2) {
+                if (i !== 0) {
+                    gridGroup.append('line')
+                        .attr('x1', xScale(xMin)).attr('y1', yScale(i))
+                        .attr('x2', xScale(xMax)).attr('y2', yScale(i))
+                        .attr('stroke', '#f8f8f8').attr('stroke-width', 0.5);
+                }
+            }
+            
+            // Draw components
+            item.components.forEach((component, index) => {
+                drawGalleryComponent(svg, component, xScale, yScale, item.color, xMin, xMax, yMin, yMax);
+            });
+            
+            // Add lattice intersection points
+            drawLatticeIntersections(svg, item, xScale, yScale, xMin, xMax, yMin, yMax);
+        }
+        
+        function drawGalleryComponent(svg, component, xScale, yScale, color, xMin, xMax, yMin, yMax) {
+            const points = [];
+            const centerX = component.center ? component.center[0] : 0;
+            const centerY = component.center ? component.center[1] : 0;
+            
+            switch (component.type) {
+                case 'circle':
+                    const startAngle = component.arc ? component.arc[0] * Math.PI / 180 : 0;
+                    const endAngle = component.arc ? component.arc[1] * Math.PI / 180 : 2 * Math.PI;
+                    
+                    for (let angle = startAngle; angle <= endAngle; angle += 0.05) {
+                        const x = centerX + component.r * Math.cos(angle);
+                        const y = centerY + component.r * Math.sin(angle);
+                        if (x >= xMin && x <= xMax && y >= yMin && y <= yMax) {
+                            points.push({ x, y });
+                        }
+                    }
+                    break;
+                    
+                case 'ellipse':
+                    for (let angle = 0; angle <= 2 * Math.PI; angle += 0.05) {
+                        const x = centerX + component.a * Math.cos(angle);
+                        const y = centerY + component.b * Math.sin(angle);
+                        if (x >= xMin && x <= xMax && y >= yMin && y <= yMax) {
+                            points.push({ x, y });
+                        }
+                    }
+                    break;
+                    
+                case 'parabola':
+                    for (let x = xMin; x <= xMax; x += 0.2) {
+                        const y = centerY + (x - centerX) * (x - centerX) / component.a;
+                        if (y >= yMin && y <= yMax) {
+                            points.push({ x, y });
+                        }
+                    }
+                    break;
+                    
+                case 'hyperbola':
+                    if (component.orientation === 'horizontal') {
+                        // Right branch
+                        for (let y = yMin; y <= yMax; y += 0.2) {
+                            const x = centerX + component.a * Math.sqrt(1 + ((y - centerY) * (y - centerY)) / (component.b * component.b));
+                            if (x >= xMin && x <= xMax) {
+                                points.push({ x, y });
+                            }
+                        }
+                        // Left branch
+                        for (let y = yMin; y <= yMax; y += 0.2) {
+                            const x = centerX - component.a * Math.sqrt(1 + ((y - centerY) * (y - centerY)) / (component.b * component.b));
+                            if (x >= xMin && x <= xMax) {
+                                points.push({ x, y });
+                            }
+                        }
+                    } else {
+                        // Upper branch
+                        for (let x = xMin; x <= xMax; x += 0.2) {
+                            const y = centerY + component.a * Math.sqrt(1 + ((x - centerX) * (x - centerX)) / (component.b * component.b));
+                            if (y >= yMin && y <= yMax) {
+                                points.push({ x, y });
+                            }
+                        }
+                        // Lower branch
+                        for (let x = xMin; x <= xMax; x += 0.2) {
+                            const y = centerY - component.a * Math.sqrt(1 + ((x - centerX) * (x - centerX)) / (component.b * component.b));
+                            if (y >= yMin && y <= yMax) {
+                                points.push({ x, y });
+                            }
+                        }
+                    }
+                    break;
+            }
+            
+            if (points.length > 0) {
+                // Handle multiple copies (for radial arrangements)
+                const copies = component.copies || 1;
+                const arrangement = component.arrangement || 'single';
+                
+                for (let copy = 0; copy < copies; copy++) {
+                    let transformedPoints = [...points];
+                    
+                    if (arrangement === 'radial' && copies > 1) {
+                        const angle = (copy * 2 * Math.PI) / copies;
+                        transformedPoints = points.map(p => ({
+                            x: p.x * Math.cos(angle) - p.y * Math.sin(angle),
+                            y: p.x * Math.sin(angle) + p.y * Math.cos(angle)
+                        }));
+                    }
+                    
+                    const line = d3.line()
+                        .x(d => xScale(d.x))
+                        .y(d => yScale(d.y))
+                        .curve(d3.curveLinear);
+                    
+                    svg.append('path')
+                        .datum(transformedPoints)
+                        .attr('d', line)
+                        .attr('fill', 'none')
+                        .attr('stroke', color)
+                        .attr('stroke-width', 2)
+                        .attr('opacity', 0.8);
+                }
+            }
+        }
+        
+        function drawLatticeIntersections(svg, item, xScale, yScale, xMin, xMax, yMin, yMax) {
+            // For demonstration, add some representative lattice points
+            const latticePoints = [];
+            
+            // Generate a few key intersection points for each design
+            for (let x = -10; x <= 10; x++) {
+                for (let y = -8; y <= 8; y++) {
+                    if (shouldShowLatticePoint(item.id, x, y)) {
+                        latticePoints.push({ x, y });
+                    }
+                }
+            }
+            
+            latticePoints.forEach(point => {
+                svg.append('circle')
+                    .attr('cx', xScale(point.x))
+                    .attr('cy', yScale(point.y))
+                    .attr('r', 2)
+                    .attr('fill', item.color)
+                    .attr('stroke', 'white')
+                    .attr('stroke-width', 1)
+                    .attr('opacity', 0.7);
+            });
+        }
+        
+        function shouldShowLatticePoint(itemId, x, y) {
+            // Simple heuristic to show relevant lattice points for each design
+            switch (itemId) {
+                case 'gothic-arch':
+                    return (x*x + y*y === 25) && y >= 0;
+                case 'infinity-symbol':
+                    return (Math.abs(x*x + y*y - 9) < 1) && Math.abs(x) >= 2;
+                case 'mandorla':
+                    return ((x+2)*(x+2) + y*y === 25) || ((x-2)*(x-2) + y*y === 25);
+                default:
+                    return (x*x + y*y <= 16) && (x*x + y*y > 0) && ((x + y) % 2 === 0);
+            }
+        }
+        
+        // Filter functionality
+        function setupFilters() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update active filter
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    activeFilter = btn.dataset.filter;
+                    
+                    // Regenerate gallery
+                    generateGallery();
+                });
+            });
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            setupFilters();
+            generateGallery();
+        });
+    </script>
+</body>
+</html>

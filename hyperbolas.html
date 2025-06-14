@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hyperbolas - Conics Explorer</title>
+    <!-- CONIC PLAN REFERENCE: This file implements Phase 1 (Foundation) for hyperbola visualization
+         Supporting "Mathematical Precision" and "Integer Lattice Points" principles from "Why Conics?" section.
+         Hyperbolas provide open curves essential for AI-driven shape generation with asymptotic approaches. -->
     <link rel="stylesheet" href="css/styles.css">
+    <script src="js/d3.min.js"></script>
+    <script src="js/common.js"></script>
 </head>
 <body>
     <div id="app">
@@ -12,15 +17,347 @@
             <a href="index.html" class="home-link">← Back to Home</a>
         </nav>
         <h1>🔄 Hyperbolas & Lattice Intersections</h1>
-        <div style="text-align: center; padding: 60px 20px; color: #666;">
-            <h2>🚧 Coming Soon</h2>
-            <p>Hyperbola visualizations and lattice intersections are under development.</p>
-            <p>This page will feature interactive hyperbola equations of the form:</p>
-            <div style="font-family: monospace; background: #f5f5f5; padding: 15px; margin: 20px auto; max-width: 200px; border-radius: 8px;">
-                x²/a² - y²/b² = 1
-            </div>
-            <p>Explore hyperbolic curves and their asymptotic behavior!</p>
+        
+        <div class="explanation">
+            <!-- PLAN REF: "Mathematical Precision" - exact algebraic definitions for hyperbolas -->
+            <p>Hyperbolas are defined by the equation <code>x²/a² - y²/b² = 1</code> (horizontal) or <code>y²/a² - x²/b² = 1</code> (vertical).</p>
+            <!-- PLAN REF: Supports Phase 2 "Assembly System" by providing open curves for complex path construction -->
+            <p>We explore hyperbolas with integer parameters that create lattice intersections, useful for creating open curves and asymptotic approaches.</p>
+        </div>
+
+        <div class="card-container" id="hyperbolaCards">
+            <!-- PLAN REF: Cards generated using "Modular Conic Construction" approach from Technical Implementation -->
+            <!-- Hyperbola cards will be generated here -->
         </div>
     </div>
+
+    <script>
+        // CONIC PLAN REFERENCE: Hyperbola implementation supporting Phase 1 (Foundation) completion
+        // Provides the mathematical foundation for "AI-Driven Shape Generation" with open curve segments
+        // Essential for asymptotic approaches in motif library and complex assemblies
+        console.log('Loading hyperbolas.html');        
+        // PLAN REF: "Modular Conic Construction" - each hyperbola labeled for assembly system
+        // These configurations support "Standard Proportions" from AI ground rules (2, 3, 4, 5 unit system)
+        // Hyperbola configurations designed for integer lattice intersections
+        const hyperbolaConfigs = [
+            // PLAN REF: Horizontal hyperbolas (x²/a² - y²/b² = 1) - Opening eastward/westward for 'e'/'w' orientation labels
+            { a: 2, b: 2, type: 'horizontal', color: '#e74c3c', title: 'Square Hyperbola (H)' },   // Future label: h2x2e
+            { a: 3, b: 2, type: 'horizontal', color: '#3498db', title: 'Horizontal Hyperbola' },    // Future label: h3x2e  
+            { a: 4, b: 3, type: 'horizontal', color: '#3498db', title: 'Wide Hyperbola' },          // Future label: h4x3e
+            { a: 5, b: 4, type: 'horizontal', color: '#3498db', title: 'Gentle Hyperbola' },       // Future label: h5x4e
+            
+            // PLAN REF: Vertical hyperbolas (y²/a² - x²/b² = 1) - Opening northward/southward for 'n'/'s' orientation labels
+            { a: 2, b: 2, type: 'vertical', color: '#9b59b6', title: 'Square Hyperbola (V)' },     // Future label: h2x2n
+            { a: 3, b: 2, type: 'vertical', color: '#9b59b6', title: 'Vertical Hyperbola' },       // Future label: h3x2n
+            { a: 4, b: 3, type: 'vertical', color: '#9b59b6', title: 'Tall Hyperbola' },           // Future label: h4x3n
+            { a: 5, b: 4, type: 'vertical', color: '#9b59b6', title: 'Steep Hyperbola' },          // Future label: h5x4n
+            
+            // PLAN REF: Special ratios supporting "Smooth Transitions" - slopes 3/4 and 4/3 from AI ground rules
+            { a: 3, b: 4, type: 'horizontal', color: '#f39c12', title: '3:4 Ratio (H)' },          // Future label: h3x4e
+            { a: 4, b: 5, type: 'horizontal', color: '#f39c12', title: '4:5 Ratio (H)' },          // Future label: h4x5e
+            { a: 5, b: 3, type: 'vertical', color: '#27ae60', title: '5:3 Ratio (V)' },            // Future label: h5x3n
+            { a: 6, b: 4, type: 'vertical', color: '#27ae60', title: '3:2 Ratio (V)' }             // Future label: h6x4n
+        ];
+
+        function generateHyperbolaCards() {
+            const container = document.getElementById('hyperbolaCards');
+            
+            hyperbolaConfigs.forEach((config, index) => {
+                const card = document.createElement('div');
+                card.className = 'card wide';
+                
+                const equation = config.type === 'horizontal' 
+                    ? `x²/${config.a}² - y²/${config.b}² = 1`
+                    : `y²/${config.a}² - x²/${config.b}² = 1`;
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${config.title}</h3>
+                        <div class="formula">${equation}</div>
+                        <div class="subtitle">a=${config.a}, b=${config.b} (${config.type})</div>
+                    </div>
+                    <div class="card-content">
+                        <div class="svg-container" id="svg-container-${index}"></div>
+                        <div class="stats" id="stats-${index}">
+                            <div class="stat-item">
+                                <span class="stat-label">Lattice Points:</span>
+                                <span class="stat-value" id="lattice-count-${index}">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Eccentricity:</span>
+                                <span class="stat-value" id="eccentricity-${index}">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Asymptote Slope:</span>
+                                <span class="stat-value" id="asymptote-${index}">-</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+                
+                // Create SVG visualization
+                setTimeout(() => createHyperbolaVisualization(config, index), 100);
+            });
+        }
+
+        function createHyperbolaVisualization(config, index) {
+            const container = document.getElementById(`svg-container-${index}`);
+            const { width, height } = calculateSVGDimensions('wide');
+            
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+            
+            // Calculate coordinate ranges
+            const range = Math.max(config.a, config.b) * 3;
+            const xMin = -range;
+            const xMax = range;
+            const yMin = -range;
+            const yMax = range;
+            
+            // Create grid and axes
+            createSVGLattice(svg, width, height, xMin, xMax, yMin, yMax);
+            createSVGAxes(svg, width, height, xMin, xMax, yMin, yMax);
+            
+            // Draw hyperbola and calculate intersections
+            const result = drawSVGHyperbola(svg, config.a, config.b, config.type, config.color, width, height, xMin, xMax, yMin, yMax);
+            
+            // Update stats
+            updateHyperbolaStats(config, result, index);
+        }
+
+        function drawSVGHyperbola(svg, a, b, type, color, width, height, xMin, xMax, yMin, yMax) {
+            const leftMargin = 35;
+            const bottomMargin = 25;
+            const topMargin = 10;
+            const effectiveWidth = width - leftMargin;
+            const effectiveHeight = height - bottomMargin - topMargin;
+            
+            const points = [];
+            const latticePoints = [];
+            const asymptotePoints = [];
+            
+            if (type === 'horizontal') {
+                // x²/a² - y²/b² = 1, solve for x = ±a*√(1 + y²/b²)
+                
+                // Right branch
+                for (let y = yMin; y <= yMax; y += 0.1) {
+                    const x = a * Math.sqrt(1 + (y * y) / (b * b));
+                    if (x >= xMin && x <= xMax) {
+                        const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
+                        const py = topMargin + effectiveHeight - (y - yMin) * (effectiveHeight / (yMax - yMin));
+                        points.push({ x: px, y: py, origX: x, origY: y, branch: 'right' });
+                    }
+                }
+                
+                // Left branch
+                for (let y = yMin; y <= yMax; y += 0.1) {
+                    const x = -a * Math.sqrt(1 + (y * y) / (b * b));
+                    if (x >= xMin && x <= xMax) {
+                        const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
+                        const py = topMargin + effectiveHeight - (y - yMin) * (effectiveHeight / (yMax - yMin));
+                        points.push({ x: px, y: py, origX: x, origY: y, branch: 'left' });
+                    }
+                }
+                
+                // Find lattice intersections for horizontal hyperbola
+                for (let y = Math.ceil(yMin); y <= Math.floor(yMax); y++) {
+                    const xSquared = a * a * (1 + (y * y) / (b * b));
+                    const x1 = Math.sqrt(xSquared);
+                    const x2 = -Math.sqrt(xSquared);
+                    
+                    [x1, x2].forEach(x => {
+                        const roundedX = Math.round(x);
+                        if (Math.abs(x - roundedX) < 1e-10 && roundedX >= xMin && roundedX <= xMax) {
+                            const px = leftMargin + (roundedX - xMin) * (effectiveWidth / (xMax - xMin));
+                            const py = topMargin + effectiveHeight - (y - yMin) * (effectiveHeight / (yMax - yMin));
+                            latticePoints.push({ x: px, y: py, origX: roundedX, origY: y });
+                        }
+                    });
+                }
+                
+                // Asymptotes: y = ±(b/a)x
+                const slope = b / a;
+                for (let x = xMin; x <= xMax; x += 0.5) {
+                    const y1 = slope * x;
+                    const y2 = -slope * x;
+                    
+                    [y1, y2].forEach(y => {
+                        if (y >= yMin && y <= yMax) {
+                            const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
+                            const py = topMargin + effectiveHeight - (y - yMin) * (effectiveHeight / (yMax - yMin));
+                            asymptotePoints.push({ x: px, y: py, origX: x, origY: y });
+                        }
+                    });
+                }
+                
+            } else { // vertical
+                // y²/a² - x²/b² = 1, solve for y = ±a*√(1 + x²/b²)
+                
+                // Upper branch
+                for (let x = xMin; x <= xMax; x += 0.1) {
+                    const y = a * Math.sqrt(1 + (x * x) / (b * b));
+                    if (y >= yMin && y <= yMax) {
+                        const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
+                        const py = topMargin + effectiveHeight - (y - yMin) * (effectiveHeight / (yMax - yMin));
+                        points.push({ x: px, y: py, origX: x, origY: y, branch: 'upper' });
+                    }
+                }
+                
+                // Lower branch
+                for (let x = xMin; x <= xMax; x += 0.1) {
+                    const y = -a * Math.sqrt(1 + (x * x) / (b * b));
+                    if (y >= yMin && y <= yMax) {
+                        const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
+                        const py = topMargin + effectiveHeight - (y - yMin) * (effectiveHeight / (yMax - yMin));
+                        points.push({ x: px, y: py, origX: x, origY: y, branch: 'lower' });
+                    }
+                }
+                
+                // Find lattice intersections for vertical hyperbola
+                for (let x = Math.ceil(xMin); x <= Math.floor(xMax); x++) {
+                    const ySquared = a * a * (1 + (x * x) / (b * b));
+                    const y1 = Math.sqrt(ySquared);
+                    const y2 = -Math.sqrt(ySquared);
+                    
+                    [y1, y2].forEach(y => {
+                        const roundedY = Math.round(y);
+                        if (Math.abs(y - roundedY) < 1e-10 && roundedY >= yMin && roundedY <= yMax) {
+                            const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
+                            const py = topMargin + effectiveHeight - (roundedY - yMin) * (effectiveHeight / (yMax - yMin));
+                            latticePoints.push({ x: px, y: py, origX: x, origY: roundedY });
+                        }
+                    });
+                }
+                
+                // Asymptotes: y = ±(a/b)x
+                const slope = a / b;
+                for (let x = xMin; x <= xMax; x += 0.5) {
+                    const y1 = slope * x;
+                    const y2 = -slope * x;
+                    
+                    [y1, y2].forEach(y => {
+                        if (y >= yMin && y <= yMax) {
+                            const px = leftMargin + (x - xMin) * (effectiveWidth / (xMax - xMin));
+                            const py = topMargin + effectiveHeight - (y - yMin) * (effectiveHeight / (yMax - yMin));
+                            asymptotePoints.push({ x: px, y: py, origX: x, origY: y });
+                        }
+                    });
+                }
+            }
+            
+            const hyperbolaGroup = svg.append('g').attr('class', 'hyperbola');
+            
+            // Draw asymptotes first (behind the hyperbola)
+            if (asymptotePoints.length > 0) {
+                // Separate into positive and negative slope lines
+                const positiveSlope = asymptotePoints.filter((_, i) => i % 2 === 0);
+                const negativeSlope = asymptotePoints.filter((_, i) => i % 2 === 1);
+                
+                [positiveSlope, negativeSlope].forEach(linePoints => {
+                    if (linePoints.length > 0) {
+                        const line = d3.line()
+                            .x(d => d.x)
+                            .y(d => d.y);
+                        
+                        hyperbolaGroup.append('path')
+                            .datum(linePoints)
+                            .attr('d', line)
+                            .attr('fill', 'none')
+                            .attr('stroke', color)
+                            .attr('stroke-width', 1)
+                            .attr('stroke-dasharray', '5,5')
+                            .attr('opacity', 0.5);
+                    }
+                });
+            }
+            
+            // Draw hyperbola branches
+            if (points.length > 0) {
+                // Separate branches
+                const branch1 = points.filter(p => p.branch === 'right' || p.branch === 'upper');
+                const branch2 = points.filter(p => p.branch === 'left' || p.branch === 'lower');
+                
+                [branch1, branch2].forEach(branchPoints => {
+                    if (branchPoints.length > 0) {
+                        branchPoints.sort((a, b) => {
+                            if (type === 'horizontal') {
+                                return a.origY - b.origY;
+                            } else {
+                                return a.origX - b.origX;
+                            }
+                        });
+                        
+                        const line = d3.line()
+                            .x(d => d.x)
+                            .y(d => d.y)
+                            .curve(d3.curveLinear);
+                        
+                        hyperbolaGroup.append('path')
+                            .datum(branchPoints)
+                            .attr('d', line)
+                            .attr('fill', 'none')
+                            .attr('stroke', color)
+                            .attr('stroke-width', 2)
+                            .attr('stroke-linejoin', 'round')
+                            .attr('stroke-linecap', 'round');
+                    }
+                });
+            }
+            
+            // Draw lattice intersection points
+            latticePoints.forEach(point => {
+                hyperbolaGroup.append('circle')
+                    .attr('cx', point.x)
+                    .attr('cy', point.y)
+                    .attr('r', 4)
+                    .attr('fill', color)
+                    .attr('stroke', 'white')
+                    .attr('stroke-width', 1.5);
+                
+                // Add coordinate labels
+                hyperbolaGroup.append('text')
+                    .attr('x', point.x + 8)
+                    .attr('y', point.y - 8)
+                    .attr('fill', '#333')
+                    .attr('font-size', '10px')
+                    .attr('font-weight', 'bold')
+                    .text(`(${point.origX},${point.origY})`);
+            });
+            
+            return { points, latticePoints, asymptotePoints };
+        }
+
+        function updateHyperbolaStats(config, result, index) {
+            // Update lattice count
+            document.getElementById(`lattice-count-${index}`).textContent = result.latticePoints.length;
+            
+            // Calculate eccentricity
+            const c = Math.sqrt(config.a * config.a + config.b * config.b);
+            const eccentricity = c / config.a;
+            document.getElementById(`eccentricity-${index}`).textContent = eccentricity.toFixed(3);
+            
+            // Calculate asymptote slope
+            const slope = config.type === 'horizontal' ? (config.b / config.a) : (config.a / config.b);
+            document.getElementById(`asymptote-${index}`).textContent = `±${slope.toFixed(3)}`;
+        }
+
+        // Function to calculate optimal SVG dimensions
+        function calculateSVGDimensions(cardType) {
+            const configs = {
+                narrow: { width: 500, height: 400 },
+                wide: { width: 600, height: 400 }
+            };
+            return configs[cardType] || configs.wide;
+        }
+
+        // Generate cards when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            generateHyperbolaCards();
+        });
+    </script>
 </body>
 </html>

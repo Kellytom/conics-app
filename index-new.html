@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conics Explorer - Mathematical Shape Generation</title>
+    <!-- CONIC PLAN REFERENCE: Main landing page supporting Phase 1-4 navigation
+         Implements print-friendly design inspired by "Serif Font" ground rules -->
+    <meta name="description" content="Explore conic sections with mathematical precision, build complex assemblies, and generate AI-driven shapes from natural language descriptions.">
+    
+    <!-- Modern CDN-based styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.20/dist/full.min.css" rel="stylesheet" type="text/css" />
+    
+    <!-- Custom CSS for conic-specific styling and print optimization -->
+    <link rel="stylesheet" href="css/conics-custom.css">
+    
+    <!-- Fallback styling for when CDN fails -->
+    <style>
+        /* Fallback styles if CDN doesn't load */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafb;
+            color: #111827;
+            line-height: 1.6;
+            filter: opacity(0.95);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }        nav {
+            background-color: rgba(243, 244, 246, 0.8);
+            padding: 0.5rem 0; /* Reduced padding */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+            backdrop-filter: blur(20px); /* Apple-like blur */
+            border-radius: 0 0 12px 12px; /* Smaller rounded bottom corners */
+        }
+        
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+            text-decoration: none;
+            opacity: 0.8;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links a {
+            color: #374151;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: color 0.2s;        }
+        
+        .nav-links a:hover {
+            color: #1f2937;
+            opacity: 1;
+        }
+
+        .btn {
+            color: #6b7280;
+            margin-bottom: 4rem; /* Significantly increased margin */
+            opacity: 0.8;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+          .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem; /* Keep increased padding */
+            border-radius: 16px; /* Increased Apple-like rounded corners */
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease; /* Smoother transition */
+            opacity: 0.8;
+            margin: 1rem 0.75rem; /* Increased vertical margin for better spacing */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Enhanced Apple-like shadow */
+            backdrop-filter: blur(10px); /* Apple-like blur effect */
+        }
+        
+        .btn-primary {
+            background-color: rgba(59, 130, 246, 0.8);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: rgba(107, 114, 128, 0.8);
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 1;
+            transform: translateY(-1px);
+        }        .features {
+            padding: 2rem 0; /* Reduced padding */
+            margin-top: 1rem; /* Reduced top margin */
+            clear: both; /* Ensure it clears any floated elements */
+        }
+        
+        .features h2 {
+            margin-bottom: 2rem; /* Reduced margin */
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem; /* Slightly reduced gap */
+            margin-top: 1rem; /* Reduced margin */
+        }        .feature-card {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1.5rem; /* Reduced padding */
+            border-radius: 16px; /* Slightly smaller rounded corners */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10); /* Subtle shadow */
+            backdrop-filter: blur(20px); /* Apple-like blur effect */
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18); /* Enhanced hover shadow */
+            opacity: 1;
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+            opacity: 0.9;
+        }
+        
+        .feature-description {
+            color: #6b7280;
+            opacity: 0.8;
+        }
+        
+        /* Card hover effects */
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+        }        /* Section spacing and layout fixes */
+        section {
+            margin-bottom: 6rem; /* Increased spacing */
+            clear: both;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero + section {
+            margin-top: 5rem; /* Extra space after hero */
+        }
+        
+        /* Ensure buttons don't overlap */
+        .screen-only {
+            margin-bottom: 5rem !important; /* Increased margin */
+            padding-bottom: 3rem; /* Increased padding */
+            position: relative;
+            z-index: 10; /* Ensure buttons are above other content */
+        }
+        
+        /* Main content spacing */
+        main {
+            padding-top: 2rem;
+            padding-bottom: 6rem; /* Increased bottom padding */
+        }
+          /* Navigation spacing */
+        nav {
+            margin-bottom: 1rem; /* Reduced margin */
+            position: relative;
+            z-index: 100;
+        }
+        
+        /* General spacing tightening */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        section {
+            margin-bottom: 2rem; /* Tightened section spacing */
+        }
+          @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            .screen-only {
+                display: none !important;
+            }
+            
+            body {
+                background: white !important;
+                filter: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-base-100 text-base-content min-h-screen">    <!-- Navigation -->
+    <nav class="navbar bg-base-200 shadow-sm screen-only" role="navigation" aria-label="Main navigation" style="padding: 0.5rem 0;">
+        <div class="container mx-auto px-4">
+            <div class="navbar-start">
+                <a href="index.html" class="btn btn-ghost text-lg nav-brand">
+                    Conics Explorer
+                </a>
+            </div>
+            
+            <div class="navbar-center hidden lg:flex">
+                <ul class="menu menu-horizontal px-1 nav-links">
+                    <li><a href="index.html" class="font-medium">Home</a></li>
+                    <li><a href="parabolas.html">Parabolas</a></li>
+                    <li><a href="ellipses.html">Ellipses</a></li>
+                    <li><a href="circles.html">Circles</a></li>
+                    <li><a href="hyperbolas.html">Hyperbolas</a></li>
+                </ul>
+            </div>
+            
+            <div class="navbar-end">
+                <div class="flex items-center space-x-1">
+                    <a href="spare-parts.html" class="btn btn-ghost btn-sm">Assembly</a>
+                    <a href="gallery.html" class="btn btn-ghost btn-sm">Gallery</a>
+                    <button class="btn btn-ghost btn-sm" onclick="toggleMathMode()" title="Toggle Math Mode">
+                        📐 Math Mode
+                    </button>
+                    <button class="btn btn-ghost btn-sm" onclick="window.print()" title="Print View">
+                        🖨️ Print View
+                    </button>
+                </div>
+            </div>        </div>
+    </nav>    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-4">
+        <!-- Document Header -->
+        <div class="bg-blue-50 border-l-4 border-blue-200 px-4 py-3 mb-6 rounded-r-lg print:bg-white print:border-gray-300">
+            <h3 class="text-lg font-semibold text-blue-900 mb-2 print:text-black">Mathematical Shape Generation</h3>
+            <p class="text-sm text-blue-800 leading-relaxed print:text-gray-700">
+                Explore conic sections with mathematical precision, assemble complex paths from modular parts, 
+                and generate AI-driven shapes from natural language descriptions.
+            </p>
+        </div>
+
+        <!-- Project Overview -->
+        <section class="mb-8 print-avoid-break features">
+            <h2 class="text-xl font-bold text-base-content mb-4 text-center">
+                Why Conic Sections?
+            </h2>
+            <div class="features-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="feature-card card bg-base-100 shadow-xl">
+                    <div class="card-body text-center">
+                        <div class="feature-icon text-3xl mb-4">📐</div>
+                        <h3 class="feature-title card-title text-base-content mb-2">Mathematical Precision</h3>
+                        <p class="feature-description text-sm text-base-content/70">
+                            Exact algebraic definitions ensure reproducible calculations and consistent results across scales.
+                        </p>
+                    </div>
+                </div>
+                <div class="feature-card card bg-base-100 shadow-xl">
+                    <div class="card-body text-center">
+                        <div class="feature-icon text-3xl mb-4">⚹</div>
+                        <h3 class="feature-title card-title text-base-content mb-2">Integer Lattice Points</h3>
+                        <p class="feature-description text-sm text-base-content/70">
+                            Reliable intersection with grid points makes shapes reproducible by craftsmen in stone, metal, and wood.
+                        </p>
+                    </div>
+                </div>
+                <div class="feature-card card bg-base-100 shadow-xl">
+                    <div class="card-body text-center">
+                        <div class="feature-icon text-3xl mb-4">🔗</div>
+                        <h3 class="feature-title card-title text-base-content mb-2">Smooth Connections</h3>
+                        <p class="feature-description text-sm text-base-content/70">
+                            Calculated slopes enable seamless joining of curve segments with perfect mathematical continuity.
+                        </p>
+                    </div>
+                </div>
+                <div class="feature-card card bg-base-100 shadow-xl">
+                    <div class="card-body text-center">
+                        <div class="feature-icon text-3xl mb-4">🏛️</div>
+                        <h3 class="feature-title card-title text-base-content mb-2">Traditional Craft</h3>
+                        <p class="feature-description text-sm text-base-content/70">
+                            Compatible with physical construction methods used in medieval stonework and modern manufacturing.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conic Types Grid -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-base-content mb-6 text-center">
+                Explore Conic Sections
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">                <!-- Parabolas -->
+                <a href="parabolas.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow group" style="border-radius: 20px; overflow: hidden;">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Parabolas</h3>
+                        <span class="text-sm opacity-70">y = x²/a</span>
+                    </div>
+                    <div class="card bg-base-50 flex items-center justify-center p-4">
+                        <svg viewBox="0 0 200 160" class="w-full h-full max-h-32">
+                            <defs>
+                                <pattern id="grid-parabola" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <path d="M 20 0 L 0 0 0 20" fill="none" class="math-grid" stroke="var(--grid-color)"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="160" fill="url(#grid-parabola)" opacity="0.3"/>
+                            <path d="M 60 140 Q 100 20 140 140" fill="none" stroke="var(--parabola-color)" stroke-width="3" opacity="0.8"/>
+                        </svg>
+                    </div>
+                </a>
+                
+                <!-- Circles -->
+                <a href="circles.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow group" style="border-radius: 20px; overflow: hidden;">
+                    <div class="card-body">
+                        <h3 class="card-title text-success">Circles</h3>
+                        <span class="text-sm opacity-70">x² + y² = r²</span>
+                    </div>
+                    <div class="card bg-base-50 flex items-center justify-center p-4">
+                        <svg viewBox="0 0 200 160" class="w-full h-full max-h-32">
+                            <rect width="200" height="160" fill="url(#grid-parabola)" opacity="0.3"/>
+                            <circle cx="100" cy="80" r="50" fill="none" stroke="var(--circle-color)" stroke-width="3" opacity="0.8"/>
+                        </svg>
+                    </div>
+                </a>
+                
+                <!-- Ellipses -->
+                <a href="ellipses.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow group">
+                    <div class="card-body">
+                        <h3 class="card-title text-info">Ellipses</h3>
+                        <span class="text-sm opacity-70">x²/a² + y²/b² = 1</span>
+                    </div>
+                    <div class="card bg-base-50 flex items-center justify-center p-4">
+                        <svg viewBox="0 0 200 160" class="w-full h-full max-h-32">
+                            <rect width="200" height="160" fill="url(#grid-parabola)" opacity="0.3"/>
+                            <ellipse cx="100" cy="80" rx="70" ry="40" fill="none" stroke="var(--ellipse-color)" stroke-width="3" opacity="0.8"/>
+                        </svg>
+                    </div>
+                </a>
+                
+                <!-- Hyperbolas -->
+                <a href="hyperbolas.html" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow group">
+                    <div class="card-body">
+                        <h3 class="card-title text-secondary">Hyperbolas</h3>
+                        <span class="text-sm opacity-70">x²/a² - y²/b² = 1</span>
+                    </div>
+                    <div class="card bg-base-50 flex items-center justify-center p-4">
+                        <svg viewBox="0 0 200 160" class="w-full h-full max-h-32">
+                            <rect width="200" height="160" fill="url(#grid-parabola)" opacity="0.3"/>
+                            <path d="M 50 20 Q 100 50 150 20 M 50 140 Q 100 110 150 140" fill="none" stroke="var(--hyperbola-color)" stroke-width="3" opacity="0.8"/>
+                        </svg>
+                    </div>
+                </a>
+            </div>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="160" fill="url(#grid-parabola)" opacity="0.3"/>
+                            <path d="M 20 140 Q 100 20 180 140" class="conic-curve conic-parabola" 
+                                  stroke-dasharray="0,100" stroke-dashoffset="100">
+                                <animate attributeName="stroke-dasharray" values="100,0;0,100" dur="2s" repeatCount="indefinite"/>
+                            </path>
+                            <circle cx="100" cy="80" r="3" class="lattice-point"/>
+                            <circle cx="60" cy="110" r="3" class="lattice-point"/>
+                            <circle cx="140" cy="110" r="3" class="lattice-point"/>
+                        </svg>
+                    </div>
+                    <div class="conic-card-details">
+                        <p>Perfect for curves that open in specific directions. Essential for smooth transitions and natural shapes.</p>
+                    </div>
+                </a>
+
+                <!-- Ellipses -->
+                <a href="ellipses.html" class="conic-card interactive group">
+                    <div class="conic-card-header">
+                        <h3 class="conic-card-title text-conic-ellipse print:text-black">Ellipses</h3>
+                        <span class="conic-card-equation">x²/a² + y²/b² = 1</span>
+                    </div>
+                    <div class="conic-card-svg bg-gray-50 print:bg-white flex items-center justify-center">
+                        <svg viewBox="0 0 200 160" class="w-full h-full">
+                            <defs>
+                                <pattern id="grid-ellipse" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <path d="M 20 0 L 0 0 0 20" fill="none" class="math-grid"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="160" fill="url(#grid-ellipse)" opacity="0.3"/>
+                            <ellipse cx="100" cy="80" rx="60" ry="40" class="conic-curve conic-ellipse"
+                                    stroke-dasharray="0,300" stroke-dashoffset="300">
+                                <animate attributeName="stroke-dasharray" values="300,0;0,300" dur="2s" repeatCount="indefinite"/>
+                            </ellipse>
+                            <circle cx="100" cy="80" r="3" class="lattice-point"/>
+                            <circle cx="160" cy="80" r="3" class="lattice-point"/>
+                            <circle cx="40" cy="80" r="3" class="lattice-point"/>
+                        </svg>
+                    </div>
+                    <div class="conic-card-details">
+                        <p>Closed curves with controllable eccentricity. Ideal for oval shapes and architectural elements.</p>
+                    </div>
+                </a>
+
+                <!-- Circles -->
+                <a href="circles.html" class="conic-card interactive group">
+                    <div class="conic-card-header">
+                        <h3 class="conic-card-title text-conic-circle print:text-black">Circles</h3>
+                        <span class="conic-card-equation">x² + y² = r²</span>
+                    </div>
+                    <div class="conic-card-svg bg-gray-50 print:bg-white flex items-center justify-center">
+                        <svg viewBox="0 0 200 160" class="w-full h-full">
+                            <defs>
+                                <pattern id="grid-circle" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <path d="M 20 0 L 0 0 0 20" fill="none" class="math-grid"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="160" fill="url(#grid-circle)" opacity="0.3"/>
+                            <circle cx="100" cy="80" r="50" class="conic-curve conic-circle"
+                                   stroke-dasharray="0,314" stroke-dashoffset="314">
+                                <animate attributeName="stroke-dasharray" values="314,0;0,314" dur="2s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle cx="100" cy="30" r="3" class="lattice-point"/>
+                            <circle cx="100" cy="130" r="3" class="lattice-point"/>
+                            <circle cx="150" cy="80" r="3" class="lattice-point"/>
+                        </svg>
+                    </div>
+                    <div class="conic-card-details">
+                        <p>Perfect symmetry with predictable Pythagorean intersections. Foundation for arcs and rounded elements.</p>
+                    </div>
+                </a>
+
+                <!-- Hyperbolas -->
+                <a href="hyperbolas.html" class="conic-card interactive group">
+                    <div class="conic-card-header">
+                        <h3 class="conic-card-title text-conic-hyperbola print:text-black">Hyperbolas</h3>
+                        <span class="conic-card-equation">x²/a² - y²/b² = 1</span>
+                    </div>
+                    <div class="conic-card-svg bg-gray-50 print:bg-white flex items-center justify-center">
+                        <svg viewBox="0 0 200 160" class="w-full h-full">
+                            <defs>
+                                <pattern id="grid-hyperbola" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <path d="M 20 0 L 0 0 0 20" fill="none" class="math-grid"/>
+                                </pattern>
+                            </defs>
+                            <rect width="200" height="160" fill="url(#grid-hyperbola)" opacity="0.3"/>
+                            <path d="M 20 20 Q 60 80 120 20" class="conic-curve conic-hyperbola"
+                                  stroke-dasharray="0,100" stroke-dashoffset="100">
+                                <animate attributeName="stroke-dasharray" values="100,0;0,100" dur="2s" repeatCount="indefinite"/>
+                            </path>
+                            <path d="M 80 140 Q 140 80 180 140" class="conic-curve conic-hyperbola"
+                                  stroke-dasharray="0,100" stroke-dashoffset="100">
+                                <animate attributeName="stroke-dasharray" values="100,0;0,100" dur="2s" repeatCount="indefinite"/>
+                            </path>
+                            <circle cx="80" cy="80" r="3" class="lattice-point"/>
+                            <circle cx="120" cy="80" r="3" class="lattice-point"/>
+                        </svg>
+                    </div>
+                    <div class="conic-card-details">
+                        <p>Open curves with asymptotic behavior. Essential for creating dramatic shapes and transitions.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Development Phases -->
+        <section class="mb-12 print-page-break">
+            <h2 class="text-2xl font-garamond font-semibold text-gray-900 mb-6 text-center">
+                Project Development Phases
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Phase 1: Foundation -->
+                <div class="conic-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">
+                            ✓
+                        </div>
+                        <h3 class="font-garamond font-semibold text-gray-900">Phase 1: Foundation</h3>
+                    </div>
+                    <div class="text-sm text-gray-600 space-y-2">
+                        <p><strong>Status:</strong> <span class="text-green-600">100% Complete</span></p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Individual conic implementations</li>
+                            <li>SVG rendering system</li>
+                            <li>Lattice intersection calculations</li>
+                            <li>Shared mathematical utilities</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 2: Assembly System -->
+                <div class="conic-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">
+                            2
+                        </div>
+                        <h3 class="font-garamond font-semibold text-gray-900">Phase 2: Assembly</h3>
+                    </div>
+                    <div class="text-sm text-gray-600 space-y-2">
+                        <p><strong>Status:</strong> <span class="text-blue-600">75% Complete</span></p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Spare-parts workspace ✓</li>
+                            <li>Gallery showcase ✓</li>
+                            <li>Conic labeling system 🔄</li>
+                            <li>Slope-matching algorithms 🔄</li>
+                        </ul>
+                        <a href="spare-parts.html" class="text-blue-600 hover:underline text-xs">→ Try Assembly Workshop</a>
+                    </div>
+                </div>
+
+                <!-- Phase 3: Motif Library -->
+                <div class="conic-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">
+                            3
+                        </div>
+                        <h3 class="font-garamond font-semibold text-gray-900">Phase 3: Motifs</h3>
+                    </div>
+                    <div class="text-sm text-gray-600 space-y-2">
+                        <p><strong>Status:</strong> <span class="text-purple-600">15% Complete</span></p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Angel wing project 🔄</li>
+                            <li>Medieval tracery elements</li>
+                            <li>Christian symbolic motifs</li>
+                            <li>Motif browser integration</li>
+                        </ul>
+                        <a href="gallery.html" class="text-purple-600 hover:underline text-xs">→ View Gallery</a>
+                    </div>
+                </div>
+
+                <!-- Phase 4: AI Integration -->
+                <div class="conic-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">
+                            4
+                        </div>
+                        <h3 class="font-garamond font-semibold text-gray-900">Phase 4: AI</h3>
+                    </div>
+                    <div class="text-sm text-gray-600 space-y-2">
+                        <p><strong>Status:</strong> <span class="text-orange-600">10% Complete</span></p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Natural language parsing</li>
+                            <li>Constraint solving</li>
+                            <li>Automated path planning</li>
+                            <li>Real-time feedback</li>
+                        </ul>
+                        <p class="text-xs italic">Future: "Generate a gothic arch with soft curves"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="text-center screen-only">
+            <h2 class="text-2xl font-garamond font-semibold text-gray-900 mb-6">
+                Quick Actions
+            </h2>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="parabolas.html" class="btn btn-outline">
+                    📈 Explore Parabolas
+                </a>
+                <a href="spare-parts.html" class="btn btn-outline">
+                    🔧 Assembly Workshop  
+                </a>
+                <a href="gallery.html" class="btn btn-outline">
+                    🎨 Browse Gallery
+                </a>
+                <a href="angels.html" class="btn btn-outline">
+                    👼 Angel Wings Project
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12 print:hidden">
+        <div class="container-main py-8">
+            <div class="text-center text-sm text-gray-600">
+                <p class="mb-2">
+                    Conics Explorer - Mathematical Shape Generation with AI-driven Assembly
+                </p>
+                <p>
+                    Built with mathematical precision for craftsman reproduction • 
+                    <a href="https://github.com/conics-explorer" class="text-blue-600 hover:underline">View Source</a>
+                </p>
+            </div>
+        </div>
+    </footer>    <!-- Print-only content -->
+    <div class="print-only">
+        <div class="text-center mt-8 pt-4 border-t border-gray-400">
+            <p class="text-sm">
+                For interactive exploration, visit: <strong>conics-explorer.github.io</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- JavaScript for interactivity and muted styling -->
+    <script>
+        // Apply muted theme and interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Conics Explorer Loading...');
+            
+            // Apply muted theme to body
+            document.body.style.filter = 'opacity(0.95)';
+            
+            // Apply muted styling to all elements
+            applyMutedStyling();
+            
+            // Initialize interactive features
+            initializeFeatures();
+        });
+        
+        function applyMutedStyling() {
+            // Apply opacity to cards
+            const cards = document.querySelectorAll('.card, .feature-card');
+            cards.forEach(card => {
+                card.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+                card.style.backdropFilter = 'blur(10px)';
+            });
+            
+            // Apply opacity to buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.style.opacity = '0.8';
+                btn.addEventListener('mouseenter', () => btn.style.opacity = '1');
+                btn.addEventListener('mouseleave', () => btn.style.opacity = '0.8');
+            });
+            
+            // Apply opacity to navigation
+            const navbar = document.querySelector('.navbar');
+            if (navbar) {
+                navbar.style.backgroundColor = 'rgba(243, 244, 246, 0.8)';
+                navbar.style.backdropFilter = 'blur(10px)';
+            }
+            
+            // Apply opacity to SVG elements
+            const svgElements = document.querySelectorAll('svg path, svg circle, svg ellipse');
+            svgElements.forEach(el => {
+                el.style.opacity = '0.8';
+            });
+        }
+        
+        function initializeFeatures() {
+            // Math mode toggle
+            window.toggleMathMode = function() {
+                const body = document.body;
+                const isMathMode = body.classList.contains('math-mode');
+                
+                if (isMathMode) {
+                    body.classList.remove('math-mode');
+                    console.log('Math mode: OFF');
+                } else {
+                    body.classList.add('math-mode');
+                    console.log('Math mode: ON');
+                }
+                
+                // Update button text
+                const mathButton = document.querySelector('[onclick="toggleMathMode()"]');
+                if (mathButton) {
+                    mathButton.textContent = isMathMode ? '📐 Math Mode' : '📊 Visual Mode';
+                }
+            };
+            
+            // Add hover effects to conic section cards
+            const conicCards = document.querySelectorAll('a.card');
+            conicCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Log successful initialization
+            console.log('✅ Conics Explorer initialized with muted styling');
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

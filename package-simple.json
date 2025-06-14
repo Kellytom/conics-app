@@ -1,0 +1,39 @@
+{
+  "name": "conics-explorer",
+  "version": "1.0.0",
+  "description": "Mathematical conic section explorer with AI-driven shape generation",
+  "main": "index.html",
+  "scripts": {
+    "build": "npm run ts:build && npm run css:build",
+    "ts:build": "tsc",
+    "ts:watch": "tsc --watch",
+    "css:build": "tailwindcss -i src/styles/main.css -o css/styles.css --minify",
+    "css:watch": "tailwindcss -i src/styles/main.css -o css/styles.css --watch",
+    "dev": "npm run css:watch & npm run ts:watch & npm run serve",
+    "serve": "python -m http.server 8000",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/d3": "^7.4.3",
+    "autoprefixer": "^10.4.16",
+    "daisyui": "^4.4.19",
+    "postcss": "^8.4.32",
+    "postcss-cli": "^11.0.0",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "d3": "^7.8.5"
+  },
+  "keywords": [
+    "mathematics",
+    "conic-sections",
+    "svg",
+    "visualization",
+    "geometry",
+    "education"
+  ],
+  "author": "Conics Explorer Team",
+  "license": "MIT"
+}

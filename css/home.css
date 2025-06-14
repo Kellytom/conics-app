@@ -211,6 +211,41 @@ header h1 {
     line-height: 1.5;
 }
 
+/* Assembly Section */
+.assembly-section {
+    margin-bottom: 60px;
+}
+
+.assembly-section h2 {
+    text-align: center;
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.assembly-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 25px;
+}
+
+.assembly-card {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+}
+
+.assembly-card:hover {
+    background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+}
+
+.gallery-card {
+    background: linear-gradient(135deg, #e74c3c 0%, #f39c12 100%);
+}
+
+.gallery-card:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #e67e22 100%);
+}
+
 /* Enhanced Footer */
 footer {
     text-align: center;

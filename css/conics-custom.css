@@ -1,0 +1,405 @@
+/**
+ * Custom CSS for Conics Explorer - Mathematical Precision Styling
+ * CONIC PLAN REFERENCE: Implements print-friendly design supporting craftsman reproduction
+ * Based on "Serif Font Inspiration" from AI ground rules
+ */
+
+/* CSS Variables for Muted Color Scheme */
+:root {
+  --conic-primary: rgba(52, 152, 219, 0.7);
+  --conic-secondary: rgba(243, 156, 18, 0.7);
+  --conic-accent: rgba(44, 62, 80, 0.7);
+  --conic-success: rgba(46, 204, 113, 0.7);
+  --conic-warning: rgba(241, 196, 15, 0.7);
+  --conic-error: rgba(231, 76, 60, 0.7);
+  
+  /* Conic-specific colors */
+  --parabola-color: rgba(231, 76, 60, 0.7);
+  --ellipse-color: rgba(52, 152, 219, 0.7);
+  --circle-color: rgba(46, 204, 113, 0.7);
+  --hyperbola-color: rgba(155, 89, 182, 0.7);
+  
+  /* Background and text with muted opacity */
+  --bg-muted: rgba(255, 255, 255, 0.7);
+  --bg-secondary-muted: rgba(243, 244, 246, 0.7);
+  --text-muted: rgba(31, 41, 55, 0.8);
+  --text-secondary-muted: rgba(107, 114, 128, 0.7);
+  
+  /* Mathematical elements */
+  --grid-color: rgba(229, 231, 235, 0.7);
+  --grid-major-color: rgba(209, 213, 219, 0.7);
+  --axes-color: rgba(107, 114, 128, 0.7);
+  --lattice-color: rgba(31, 41, 55, 0.7);
+}
+
+/* Apply muted theme globally */
+body {
+  filter: opacity(0.95);
+}
+
+/* Mathematical Typography */
+.font-garamond {
+  font-family: 'Garamond', 'Georgia', serif;
+}
+
+.math-formula {
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 0.875rem;
+  background-color: var(--bg-secondary-muted);
+  color: var(--text-muted);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--grid-color);
+  opacity: 0.8;
+}
+
+/* Conic Section Color System - Using CSS Variables */
+.conic-parabola {
+  stroke: var(--parabola-color);
+  fill: none;
+  stroke-width: 2;
+  opacity: 0.7;
+}
+
+.conic-ellipse {
+  stroke: var(--ellipse-color);
+  fill: none;
+  stroke-width: 2;
+  opacity: 0.7;
+}
+
+.conic-circle {
+  stroke: var(--circle-color);
+  fill: none;
+  stroke-width: 2;
+  opacity: 0.7;
+}
+
+.conic-hyperbola {
+  stroke: var(--hyperbola-color);
+  fill: none;
+  stroke-width: 2;
+  opacity: 0.7;
+}
+
+/* Mathematical Grid System - Using CSS Variables */
+.math-grid {
+  stroke: var(--grid-color);
+  stroke-width: 1;
+  fill: none;
+  opacity: 0.7;
+}
+
+.math-grid-major {
+  stroke: var(--grid-major-color);
+  stroke-width: 1;
+  fill: none;
+  opacity: 0.7;
+}
+
+.math-axes {
+  stroke: var(--axes-color);
+  stroke-width: 2;
+  fill: none;
+  opacity: 0.7;
+}
+
+/* Lattice Points - Using CSS Variables */
+.lattice-point {
+  fill: var(--lattice-color);
+  stroke: var(--text-secondary-muted);
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+.lattice-point-label {
+  fill: var(--text-secondary-muted);
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 0.75rem;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Interactive Elements */
+.conic-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.conic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.conic-svg {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+
+/* Assembly Workspace */
+.assembly-workspace {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+  min-height: 24rem;
+}
+
+.parts-library {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.part-item {
+  padding: 0.75rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.part-item:hover {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.part-item.selected {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+}
+
+.part-label {
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.assembly-canvas {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  min-height: 24rem;
+}
+
+/* Gallery Layout */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.gallery-item {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.gallery-item-image {
+  width: 100%;
+  height: 12rem;
+  background-color: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.gallery-item-content {
+  padding: 1rem;
+}
+
+.gallery-item-title {
+  font-family: 'Garamond', 'Georgia', serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.gallery-item-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.gallery-item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+/* Math Mode Toggle */
+.math-mode .formula-display {
+  display: block !important;
+}
+
+.math-mode .coordinate-label {
+  opacity: 1 !important;
+}
+
+.math-mode .lattice-point-label {
+  opacity: 1 !important;
+}
+
+/* Animation Utilities */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.draw-path {
+  animation: drawPath 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes drawPath {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .assembly-workspace {
+    grid-template-columns: 1fr;
+  }
+  
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .math-formula {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.375rem;
+  }
+}
+
+/* Print Optimizations - Override all colors for print */
+@page {
+  size: A4;
+  margin: 2cm;
+}
+
+@media print {
+  /* Force black text and white backgrounds */
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+  
+  /* Conic curves become black for print */
+  .conic-parabola,
+  .conic-ellipse,
+  .conic-circle,
+  .conic-hyperbola {
+    stroke: black !important;
+    fill: none !important;
+  }
+  
+  /* Grid and mathematical elements */
+  .math-grid {
+    stroke: #666666 !important;
+  }
+  
+  .math-grid-major {
+    stroke: #333333 !important;
+  }
+  
+  .math-axes {
+    stroke: black !important;
+  }
+  
+  .lattice-point {
+    fill: black !important;
+    stroke: black !important;
+  }
+  
+  .lattice-point-label {
+    fill: black !important;
+  }
+  
+  /* Cards and containers */
+  .card,
+  .conic-card,
+  .gallery-item,
+  .part-item {
+    border: 1px solid #666666 !important;
+    background: white !important;
+    box-shadow: none !important;
+  }
+  
+  /* Hide interactive elements */
+  .print-hidden,
+  nav,
+  button:not(.print-show),
+  .filter-button {
+    display: none !important;
+  }
+  
+  /* Show print-only content */
+  .print-only {
+    display: block !important;
+  }
+  
+  /* Avoid page breaks inside important content */
+  .break-avoid,
+  .conic-card,
+  .gallery-item,
+  article {
+    page-break-inside: avoid;
+  }
+  
+  /* Force page breaks */
+  .break-before {
+    page-break-before: always;
+  }
+  
+  .break-after {
+    page-break-after: always;
+  }
+  
+  /* Typography adjustments for print */
+  .math-formula {
+    background: white !important;
+    border: 1px solid #666666 !important;
+  }
+  
+  /* Remove hover effects and transitions */
+  .conic-card:hover,
+  .gallery-item:hover,
+  .part-item:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}

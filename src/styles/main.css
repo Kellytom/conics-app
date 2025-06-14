@@ -1,0 +1,389 @@
+/**
+ * Main Tailwind CSS file for Conics Explorer
+ * CONIC PLAN REFERENCE: Implements print-friendly design supporting craftsman reproduction
+ * Based on "Serif Font Inspiration" from AI ground rules - clean, reproducible design
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Typography inspired by Garamond and mathematical clarity */
+  html {
+    font-family: 'Inter', 'Helvetica', sans-serif;
+    @apply text-black bg-white;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Garamond', 'Georgia', serif;
+    @apply text-black;
+  }
+
+  /* Mathematical formulas styling */
+  code {
+    @apply font-mono bg-gray-100 px-2 py-1 rounded border text-sm;
+  }
+
+  /* Print optimizations */
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact !important;
+      color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    
+    body {
+      @apply text-black bg-white;
+    }
+    
+    .no-print {
+      display: none !important;
+    }
+    
+    .print-break-before {
+      page-break-before: always;
+    }
+    
+    .print-break-after {
+      page-break-after: always;
+    }
+    
+    .print-avoid-break {
+      page-break-inside: avoid;
+    }
+  }
+}
+
+@layer components {
+  /* Main navigation styling */
+  .nav-main {
+    @apply bg-white border-b border-gray-200 px-6 py-4 print:hidden;
+  }
+
+  .nav-link {
+    @apply text-gray-700 hover:text-blue-600 transition-colors duration-200;
+    @apply font-medium text-sm tracking-wide;
+  }
+
+  .nav-link.active {
+    @apply text-blue-600 border-b-2 border-blue-600;
+  }
+
+  /* Conic section cards */
+  .conic-card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+    @apply p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    @apply print:shadow-none print:border print:border-gray-400;
+  }
+
+  .conic-card-header {
+    @apply flex items-center justify-between mb-4;
+  }
+
+  .conic-card-title {
+    @apply text-lg font-garamond font-semibold text-gray-900;
+  }
+
+  .conic-card-equation {
+    @apply text-sm font-mono bg-gray-50 px-3 py-1 rounded border;
+    @apply print:bg-white print:border-gray-400;
+  }
+
+  .conic-card-svg {
+    @apply w-full h-64 border border-gray-100 rounded;
+    @apply print:border-gray-400;
+  }
+
+  .conic-card-details {
+    @apply mt-4 space-y-2 text-sm text-gray-600;
+  }
+
+  /* Mathematical grid styling */
+  .math-grid {
+    @apply stroke-gray-300 stroke-1;
+    @apply print:stroke-gray-400;
+  }
+
+  .math-grid-major {
+    @apply stroke-gray-400 stroke-1;
+    @apply print:stroke-gray-600;
+  }
+
+  .math-axes {
+    @apply stroke-gray-600 stroke-2;
+    @apply print:stroke-black;
+  }
+
+  /* Lattice points */
+  .lattice-point {
+    @apply fill-blue-500 stroke-blue-700 stroke-1;
+    @apply print:fill-black print:stroke-black;
+  }
+
+  .lattice-point-label {
+    @apply fill-gray-700 text-xs font-mono;
+    @apply print:fill-black;
+  }
+
+  /* Conic curves styling */
+  .conic-curve {
+    @apply fill-none stroke-2;
+  }
+
+  .conic-parabola {
+    @apply stroke-conic-parabola;
+    @apply print:stroke-black;
+  }
+
+  .conic-ellipse {
+    @apply stroke-conic-ellipse;
+    @apply print:stroke-black;
+  }
+
+  .conic-circle {
+    @apply stroke-conic-circle;
+    @apply print:stroke-black;
+  }
+
+  .conic-hyperbola {
+    @apply stroke-conic-hyperbola;
+    @apply print:stroke-black;
+  }
+
+  /* Assembly workspace styling */
+  .assembly-workspace {
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
+  }
+
+  .assembly-sidebar {
+    @apply bg-gray-50 rounded-lg p-4 border border-gray-200;
+    @apply print:bg-white print:border-gray-400;
+  }
+
+  .assembly-canvas {
+    @apply lg:col-span-2 bg-white rounded-lg border border-gray-200;
+    @apply min-h-96 p-4;
+    @apply print:border-gray-400;
+  }
+
+  .parts-library {
+    @apply space-y-3;
+  }
+
+  .part-item {
+    @apply p-3 bg-white rounded border border-gray-200;
+    @apply hover:bg-gray-50 cursor-pointer transition-colors;
+    @apply flex items-center justify-between;
+    @apply print:border-gray-400;
+  }
+
+  .part-item.selected {
+    @apply bg-blue-50 border-blue-300;
+    @apply print:bg-gray-100;
+  }
+
+  .part-label {
+    @apply font-mono text-sm font-medium;
+  }
+
+  .part-preview {
+    @apply w-8 h-8 flex-shrink-0;
+  }
+
+  /* Gallery styling */
+  .gallery-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+
+  .gallery-item {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+    @apply overflow-hidden transition-all duration-300;
+    @apply hover:shadow-lg hover:-translate-y-1;
+    @apply print:shadow-none print:break-inside-avoid;
+  }
+
+  .gallery-item-image {
+    @apply w-full h-48 bg-gray-50 flex items-center justify-center;
+    @apply border-b border-gray-200;
+    @apply print:border-gray-400;
+  }
+
+  .gallery-item-content {
+    @apply p-4;
+  }
+
+  .gallery-item-title {
+    @apply font-garamond text-lg font-semibold text-gray-900 mb-2;
+  }
+
+  .gallery-item-description {
+    @apply text-sm text-gray-600 mb-3;
+  }
+
+  .gallery-item-meta {
+    @apply flex items-center justify-between text-xs text-gray-500;
+  }
+
+  /* Filter and controls */
+  .filter-controls {
+    @apply flex flex-wrap gap-3 mb-6 print:hidden;
+  }
+
+  .filter-button {
+    @apply px-3 py-1 text-sm border border-gray-300 rounded;
+    @apply hover:bg-gray-50 transition-colors;
+  }
+
+  .filter-button.active {
+    @apply bg-blue-100 border-blue-300 text-blue-700;
+  }
+
+  /* Mathematical mode toggle */
+  .math-mode-toggle {
+    @apply print:hidden;
+  }
+
+  .math-mode .formula-display {
+    @apply block;
+  }
+
+  .math-mode .coordinate-label {
+    @apply opacity-100;
+  }
+
+  /* Loading states */
+  .loading-placeholder {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+
+  .loading-spinner {
+    @apply animate-spin h-5 w-5 border-2 border-blue-500;
+    @apply border-t-transparent rounded-full;
+  }
+
+  /* Responsive utilities */
+  .container-main {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-spacing {
+    @apply py-8 lg:py-12;
+  }
+
+  /* Accessibility improvements */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden;
+    @apply whitespace-nowrap border-0;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  /* Focus states for keyboard navigation */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
+
+  /* Animation utilities */
+  .fade-in {
+    @apply animate-fade-in;
+  }
+
+  .slide-up {
+    @apply animate-slide-up;
+  }
+
+  /* Print-specific styles */
+  .print-page-break {
+    @screen print {
+      page-break-before: always;
+    }
+  }
+
+  .print-avoid-break {
+    @screen print {
+      page-break-inside: avoid;
+    }
+  }
+
+  .print-landscape {
+    @screen print {
+      @page {
+        size: landscape;
+      }
+    }
+  }
+}
+
+@layer utilities {
+  /* Custom mathematical utilities */
+  .math-formula {
+    @apply font-mono text-sm bg-gray-100 px-2 py-1 rounded border;
+    @apply print:bg-white print:border-gray-400;
+  }
+
+  .coordinate-display {
+    @apply font-mono text-xs text-gray-600;
+    @apply print:text-black;
+  }
+
+  /* SVG responsive utilities */
+  .svg-responsive {
+    @apply w-full h-auto max-w-full;
+  }
+
+  .svg-container {
+    @apply relative w-full;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  }
+
+  .svg-absolute {
+    @apply absolute top-0 left-0 w-full h-full;
+  }
+
+  /* Conic-specific spacing utilities */
+  .conic-spacing-sm {
+    @apply space-y-2;
+  }
+
+  .conic-spacing-md {
+    @apply space-y-4;
+  }
+
+  .conic-spacing-lg {
+    @apply space-y-6;
+  }
+
+  /* Print color utilities */
+  .print-black {
+    @screen print {
+      @apply text-black fill-black stroke-black;
+    }
+  }
+
+  .print-white {
+    @screen print {
+      @apply bg-white text-black;
+    }
+  }
+
+  /* Theme-aware utilities */
+  .theme-light {
+    @apply bg-white text-gray-900;
+  }
+
+  .theme-print {
+    @apply bg-white text-black;
+  }
+
+  /* Interaction states */
+  .interactive {
+    @apply cursor-pointer transition-all duration-200;
+    @apply hover:scale-105 active:scale-95;
+  }
+
+  .selectable {
+    @apply select-none cursor-pointer;
+    @apply hover:bg-blue-50 active:bg-blue-100;
+    @apply print:hover:bg-transparent print:active:bg-transparent;
+  }
+}

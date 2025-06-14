@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parabolas - Conics Explorer</title>
+    
+    <!-- CONIC PLAN REFERENCE: This file implements Phase 1 (Foundation) for parabola visualization
+         Core implementation of "Mathematical Precision" and "Integer Lattice Points" from "Why Conics?" section.
+         Parabolas are fundamental to AI-driven shape generation and provide smooth connection capabilities. -->
+    
+    <!-- Modern CDN-based styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.20/dist/full.min.css" rel="stylesheet" type="text/css" />
+    
+    <!-- Custom CSS for conic-specific styling and print optimization -->
+    <link rel="stylesheet" href="css/conics-custom.css">    <!-- D3.js for advanced mathematical visualizations -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- Modern JavaScript modules (converted from TypeScript) -->
+    <script type="module" src="js/parabola.js"></script>
+    <script type="module" src="js/parabola-app.js"></script>
+    
+    <style>
+        /* Page-specific responsive tweaks */
+        .parabola-grid {
+            min-height: 400px;
+        }
+        
+        @media (max-width: 768px) {
+            .parabola-card {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Enhanced mathematical display */
+        .formula-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: var(--conic-primary);
+        }
+          /* Parabola-specific color scheme - muted with opacity */
+        .parabola-curve {
+            stroke: rgba(231, 76, 60, 0.7);
+            stroke-width: 2.5;
+            fill: none;
+        }
+        
+        .parabola-highlight {
+            stroke: rgba(192, 57, 43, 0.7);
+            stroke-width: 3;
+        }
+        
+        /* Override alert colors to be more muted */
+        .alert-info {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .alert-warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        
+        /* Muted navigation colors */
+        .navbar {
+            background-color: rgba(229, 231, 235, 0.7);
+        }
+        
+        .btn-primary {
+            background-color: rgba(59, 130, 246, 0.7);
+            border-color: rgba(59, 130, 246, 0.7);
+        }
+        
+        .btn-secondary {
+            background-color: rgba(107, 114, 128, 0.7);
+            border-color: rgba(107, 114, 128, 0.7);
+        }
+        
+        /* Card backgrounds more muted */
+        .card {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+        }
+        
+        .bg-base-200 {
+            background-color: rgba(243, 244, 246, 0.7) !important;
+        }
+    </style>
+</head>
+
+<body class="bg-base-100 text-base-content min-h-screen">
+    <!-- Navigation -->
+    <nav class="navbar bg-base-200 shadow-lg print:hidden">
+        <div class="navbar-start">
+            <a href="index.html" class="btn btn-ghost text-xl">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Conics Explorer
+            </a>
+        </div>
+        
+        <div class="navbar-center">
+            <h1 class="text-2xl font-bold text-primary">Parabolas & Lattice Intersections</h1>
+        </div>
+        
+        <div class="navbar-end">
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-circle btn-ghost">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zM12 13a1 1 0 110-2 1 1 0 010 2zM12 20a1 1 0 110-2 1 1 0 010 2z"/>
+                    </svg>
+                </label>
+                <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="ellipses.html">Ellipses</a></li>
+                    <li><a href="circles.html">Circles</a></li>
+                    <li><a href="hyperbolas.html">Hyperbolas</a></li>
+                    <li><hr class="my-1"></li>
+                    <li><a href="spare-parts.html">Spare Parts</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto px-4 py-6 max-w-7xl">
+        <!-- Introduction Section -->
+        <section class="prose max-w-none mb-8">
+            <div class="alert alert-info">
+                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div>
+                    <h3 class="font-bold">About Parabolas</h3>
+                    <p class="text-sm">Parabolas are the foundation of conic assembly systems. They provide smooth, predictable curves with well-defined lattice intersections, making them ideal for AI-driven shape generation and mathematical art.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="text-center py-8">
+            <div class="loading loading-spinner loading-lg text-primary"></div>
+            <p class="mt-4 text-base-content/70">Loading D3.js and initializing graphics...</p>
+        </div>
+
+        <!-- Interactive Controls -->
+        <section class="mb-6 print:hidden">
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Visualization Controls</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Display Options -->
+                        <div class="form-control">
+                            <label class="label cursor-pointer">
+                                <span class="label-text">Show Grid</span>
+                                <input type="checkbox" id="showGrid" class="toggle toggle-primary" checked>
+                            </label>
+                        </div>
+                        <div class="form-control">
+                            <label class="label cursor-pointer">
+                                <span class="label-text">Show Lattice Points</span>
+                                <input type="checkbox" id="showLatticePoints" class="toggle toggle-primary" checked>
+                            </label>
+                        </div>
+                        <div class="form-control">
+                            <label class="label cursor-pointer">
+                                <span class="label-text">Show Formulas</span>
+                                <input type="checkbox" id="showFormulas" class="toggle toggle-primary">
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Color Scheme Selection -->
+                    <div class="divider"></div>
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">
+                            <span class="label-text">Color Scheme</span>
+                        </label>
+                        <select id="colorScheme" class="select select-bordered">
+                            <option value="default">Default</option>
+                            <option value="mathematical">Mathematical</option>
+                            <option value="celestial">Celestial</option>
+                            <option value="print">Print-friendly</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Parabola Function Cards Container -->
+        <section id="functionCards" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Cards will be dynamically generated by JavaScript -->
+        </section>
+
+        <!-- Mathematical Notes Section -->
+        <section class="mt-12 prose max-w-none">
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-4">Mathematical Foundation</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Standard Form</h3>
+                            <div class="formula-display bg-base-300 p-4 rounded-lg">
+                                y = ax² + bx + c
+                            </div>
+                            <p class="text-sm mt-2">The general quadratic form where a ≠ 0 determines the parabola's shape and orientation.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Vertex Form</h3>
+                            <div class="formula-display bg-base-300 p-4 rounded-lg">
+                                y = a(x - h)² + k
+                            </div>
+                            <p class="text-sm mt-2">Where (h, k) is the vertex and 'a' controls the width and direction of opening.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Focus-Directrix</h3>
+                            <div class="formula-display bg-base-300 p-4 rounded-lg">
+                                Focus: (h, k + 1/(4a))<br>
+                                Directrix: y = k - 1/(4a)
+                            </div>
+                            <p class="text-sm mt-2">Geometric definition using focus point and directrix line.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Lattice Intersections</h3>
+                            <div class="formula-display bg-base-300 p-4 rounded-lg">
+                                Integer solutions to<br>
+                                y = ax² + bx + c
+                            </div>
+                            <p class="text-sm mt-2">Points where both x and y coordinates are integers, essential for assembly systems.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Assembly Notes for Future Implementation -->
+        <section class="mt-8">
+            <div class="alert alert-warning">
+                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 19c-.77.833.192 2.5 1.732 2.5z"/>
+                </svg>
+                <div>
+                    <h3 class="font-bold">Development Note</h3>
+                    <p class="text-sm">Parabola viewing issues are being addressed. The coordinate system will be enhanced to properly display all parabola types within the viewport. See TODO comments in source for technical details.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-4 bg-base-200 text-base-content mt-12 print:hidden">
+        <div>
+            <p class="font-semibold">Conics Explorer - Mathematical Art & Assembly System</p>
+            <p class="text-sm opacity-70">Exploring the intersection of mathematics, art, and computation</p>
+        </div>
+    </footer>    <!-- Fallback initialization with muted color scheme -->
+    <script>
+        // Muted color schemes with 0.7 opacity
+        const mutedColorSchemes = {
+            default: {
+                parabola: 'rgba(231, 76, 60, 0.7)',
+                primary: 'rgba(52, 152, 219, 0.7)',
+                secondary: 'rgba(243, 156, 18, 0.7)',
+                accent: 'rgba(44, 62, 80, 0.7)',
+                success: 'rgba(46, 204, 113, 0.7)',
+                warning: 'rgba(241, 196, 15, 0.7)',
+                error: 'rgba(231, 76, 60, 0.7)'
+            },
+            mathematical: {
+                parabola: 'rgba(139, 69, 19, 0.7)',
+                primary: 'rgba(25, 25, 112, 0.7)',
+                secondary: 'rgba(128, 0, 128, 0.7)',
+                accent: 'rgba(0, 100, 0, 0.7)',
+                grid: 'rgba(105, 105, 105, 0.7)'
+            },
+            celestial: {
+                parabola: 'rgba(255, 215, 0, 0.7)',
+                primary: 'rgba(75, 172, 254, 0.7)',
+                secondary: 'rgba(138, 43, 226, 0.7)',
+                accent: 'rgba(255, 20, 147, 0.7)',
+                background: 'rgba(25, 25, 112, 0.7)'
+            },
+            print: {
+                parabola: 'rgba(0, 0, 0, 0.8)',
+                primary: 'rgba(0, 0, 0, 0.8)',
+                secondary: 'rgba(64, 64, 64, 0.8)',
+                accent: 'rgba(128, 128, 128, 0.7)',
+                background: 'rgba(255, 255, 255, 0.9)'
+            }
+        };
+
+        // Simple fallback if modules don't load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Parabola Explorer Loading...');
+            
+            // Apply muted theme to body
+            document.body.style.filter = 'opacity(0.95)';
+            
+            // Initialize controls for immediate feedback
+            const controls = {
+                showGrid: document.getElementById('showGrid'),
+                showLatticePoints: document.getElementById('showLatticePoints'),
+                showFormulas: document.getElementById('showFormulas'),
+                colorScheme: document.getElementById('colorScheme')
+            };
+            
+            // Add event listeners with muted styling
+            Object.entries(controls).forEach(([key, element]) => {
+                if (element) {
+                    // Apply muted styling to controls
+                    element.style.opacity = '0.8';
+                    
+                    element.addEventListener('change', function() {
+                        console.log(`${key} changed to:`, this.checked || this.value);
+                        
+                        // Apply color scheme changes
+                        if (key === 'colorScheme' && this.value) {
+                            applyColorScheme(this.value);
+                        }
+                    });
+                }
+            });
+            
+            // Apply default muted colors
+            applyColorScheme('default');
+            
+            // Check if modules loaded successfully
+            setTimeout(() => {
+                const loading = document.getElementById('loadingIndicator');
+                if (loading && loading.style.display !== 'none') {
+                    console.log('⚠️ Module loading may have failed, using fallback');
+                    loading.style.opacity = '0.7';
+                    loading.innerHTML = `
+                        <div class="alert alert-warning" style="background-color: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3);">
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="opacity: 0.7;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 19c-.77.833.192 2.5 1.732 2.5z"/>
+                            </svg>
+                            <div style="opacity: 0.8;">
+                                <h3 class="font-bold">Initializing Visualizations</h3>
+                                <p class="text-sm">Loading parabola mathematics and rendering system...</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }, 2000);
+        });
+        
+        function applyColorScheme(schemeName) {
+            const scheme = mutedColorSchemes[schemeName] || mutedColorSchemes.default;
+            
+            // Apply to CSS custom properties
+            const root = document.documentElement;
+            root.style.setProperty('--conic-primary', scheme.primary);
+            root.style.setProperty('--conic-secondary', scheme.secondary);
+            root.style.setProperty('--conic-accent', scheme.accent);
+            root.style.setProperty('--parabola-color', scheme.parabola);
+            
+            // Update existing elements with muted styling
+            const curves = document.querySelectorAll('.parabola-curve');
+            curves.forEach(curve => {
+                curve.style.stroke = scheme.parabola;
+                curve.style.opacity = '0.7';
+            });
+            
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                card.style.backdropFilter = 'blur(10px)';
+            });
+            
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.opacity = '0.8';
+            });
+            
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.style.opacity = '0.8';
+            });
+        }
+    </script>
+</body>
+</html>

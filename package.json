@@ -1,0 +1,31 @@
+{
+  "name": "conics-explorer",
+  "version": "1.0.0",
+  "description": "Mathematical conic section explorer with AI-driven shape generation",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npm run ts:watch & npm run serve",
+    "build": "npm run ts:build",
+    "ts:build": "tsc",
+    "ts:watch": "tsc --watch",
+    "serve": "python -m http.server 8000",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "d3": "^7.8.5"
+  },
+  "keywords": [
+    "mathematics",
+    "conic-sections",
+    "svg",
+    "visualization",
+    "geometry",
+    "education"
+  ],
+  "author": "Conics Explorer Team",
+  "license": "MIT"
+}

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+CONIC PLAN REFERENCE: This file implements "Technical Implementation Section 2 - Spare Parts Page"
+from the Conics Explorer Project Plan. It serves as the main workspace for Phase 2 (Assembly System).
+
+PURPOSE: "A workspace to assemble and experiment with conic parts. Users can select a conic from 
+a list, set endpoints, and attach it to another conic at a matching intersection point and slope."
+
+PLAN INTEGRATION:
+- Supports "Modular Conic Construction" (Section 1) with labeled parts library
+- Implements "Assembly Workflow" (Section 3) for step-by-step construction  
+- Provides foundation for "Angel Wing Project" (Section 5) and other motifs
+- Enables testing of "Ground Rules" enforcement (serif typography principles)
+
+CURRENT STATUS: Basic assembly interface complete (75% of Phase 2)
+TODO: Implement conic labeling system (n64, e60, ne1, etc.) and slope-matching algorithms
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spare Parts - Conics Explorer</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/d3.min.js"></script>
+    <script src="js/common.js"></script>
+    <style>
+        /* PLAN REF: Visual organization supporting modular construction interface */
+        .parts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        /* PLAN REF: Individual conic part representation for assembly workflow */
+        .part-card {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .part-card:hover {
+            border-color: #3498db;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .part-card.selected {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+        
+        .part-info {
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        /* PLAN REF: Part labeling system (future: n64, e60, ne1 format) */
+        .part-label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        /* PLAN REF: Mathematical precision display for exact algebraic definitions */
+        .part-equation {
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .assembly-area {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            min-height: 400px;
+            margin: 20px 0;
+            padding: 20px;
+            text-align: center;
+            background: #fafafa;
+        }
+        
+        .assembly-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .control-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .control-btn:hover {
+            background: #2980b9;
+        }
+        
+        .control-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <nav>
+            <a href="index.html" class="home-link">← Back to Home</a>
+        </nav>
+        <h1>🔧 Spare Parts Assembly</h1>
+        
+        <div class="explanation">
+            <p>Build complex shapes by assembling conic sections that share lattice intersection points and matching slopes.</p>
+            <p>Select parts from the library below and drag them to the assembly area to create custom designs.</p>
+        </div>
+
+        <h2>📦 Parts Library</h2>
+        <div class="parts-grid" id="partsLibrary">
+            <!-- Parts will be generated here -->
+        </div>
+
+        <h2>🎨 Assembly Area</h2>
+        <div class="assembly-controls">
+            <button class="control-btn" id="clearBtn">Clear All</button>
+            <button class="control-btn" id="exportBtn" disabled>Export SVG</button>
+            <button class="control-btn" id="saveBtn" disabled>Save Design</button>
+        </div>
+        
+        <div class="assembly-area" id="assemblyArea">
+            <div id="assemblyCanvas"></div>
+            <p style="color: #888; margin-top: 20px;">Click parts above to add them to your assembly</p>
+        </div>
+
+        <h2>📋 Current Assembly</h2>
+        <div id="assemblyInfo">
+            <p>No parts selected yet.</p>
+        </div>
+    </div>    <script>
+        // CONIC PLAN REFERENCE: This JavaScript implements the core assembly system
+        // from "Technical Implementation Section 2 & 3" - Spare Parts Page and Assembly Workflow
+        
+        console.log('Loading spare-parts.html');
+        
+        // Parts library with conic sections
+        // PLAN REF: Implements "Modular Conic Construction" with individual labeled parts
+        // TODO: Add directional labeling system (n64, e60, ne1, etc.) per plan Section 1
+        // CURRENT: Basic parts exist, NEEDED: Orientation labels for assembly guidance
+        const partsLibrary = [
+            // Parabola segments - fundamental curves for organic shapes (angel wings, etc.)
+            // PLAN REF: Core component for "Angel Wing Project" (Section 5)
+            { type: 'parabola', a: 4, label: 'Parabola A4', equation: 'y = x²/4', color: '#e74c3c' },
+            { type: 'parabola', a: 16, label: 'Parabola A16', equation: 'y = x²/16', color: '#e74c3c' },
+            { type: 'parabola', a: 64, label: 'Parabola A64', equation: 'y = x²/64', color: '#e74c3c' },
+            
+            // Circle arcs - essential for gothic arches and traditional forms
+            // PLAN REF: Medieval tracery elements (Phase 3) and ground rules compliance
+            { type: 'circle', r: 3, label: 'Circle R3', equation: 'x² + y² = 9', color: '#3498db' },
+            { type: 'circle', r: 5, label: 'Circle R5', equation: 'x² + y² = 25', color: '#3498db' },
+            { type: 'circle', r: Math.sqrt(13), label: 'Circle R√13', equation: 'x² + y² = 13', color: '#3498db' },
+            
+            // Ellipse segments - for complex organic and geometric forms
+            // PLAN REF: Motif library components and decorative elements
+            { type: 'ellipse', a: 5, b: 3, label: 'Ellipse 5×3', equation: 'x²/25 + y²/9 = 1', color: '#9b59b6' },
+            { type: 'ellipse', a: 4, b: 3, label: 'Ellipse 4×3', equation: 'x²/16 + y²/9 = 1', color: '#9b59b6' },
+            
+            // Hyperbola branches - for asymptotic and decorative elements
+            // PLAN REF: Advanced motif construction and symbolic forms
+            { type: 'hyperbola', a: 3, b: 4, orientation: 'horizontal', label: 'Hyperbola H3×4', equation: 'x²/9 - y²/16 = 1', color: '#f39c12' },
+            { type: 'hyperbola', a: 4, b: 3, orientation: 'vertical', label: 'Hyperbola V4×3', equation: 'y²/16 - x²/9 = 1', color: '#f39c12' }
+        ];
+        
+        // Assembly state management
+        // PLAN REF: Supports "Assembly Workflow" (Section 3) - step-by-step construction
+        let selectedParts = [];  // Currently assembled parts
+        let assemblyCanvas = null;  // Main assembly visualization
+        
+        // Generate the parts library interface
+        // PLAN REF: Visual implementation of modular construction interface
+        // TODO: Add visual previews and better part organization per plan
+        function generatePartsLibrary() {
+            const container = document.getElementById('partsLibrary');
+            
+            partsLibrary.forEach((part, index) => {
+                const partCard = document.createElement('div');
+                partCard.className = 'part-card';
+                partCard.dataset.partIndex = index;
+                
+                // Create mini SVG preview
+                const previewSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                previewSvg.setAttribute('width', '150');
+                previewSvg.setAttribute('height', '100');
+                previewSvg.style.border = '1px solid #eee';
+                previewSvg.style.borderRadius = '4px';
+                
+                partCard.appendChild(previewSvg);
+                
+                const partInfo = document.createElement('div');
+                partInfo.className = 'part-info';
+                partInfo.innerHTML = `
+                    <div class="part-label">${part.label}</div>
+                    <div class="part-equation">${part.equation}</div>
+                `;
+                partCard.appendChild(partInfo);
+                
+                // Add click handler
+                partCard.addEventListener('click', () => addPartToAssembly(index));
+                
+                container.appendChild(partCard);
+                
+                // Draw mini preview
+                setTimeout(() => drawPartPreview(previewSvg, part), 100);
+            });
+        }
+        
+        function drawPartPreview(svg, part) {
+            const d3svg = d3.select(svg);
+            const width = 150;
+            const height = 100;
+            
+            // Simple coordinate system for preview
+            const xMin = -6, xMax = 6, yMin = -4, yMax = 4;
+            const margin = 10;
+            const effectiveWidth = width - 2 * margin;
+            const effectiveHeight = height - 2 * margin;
+            
+            // Transform function
+            const xScale = (x) => margin + (x - xMin) * effectiveWidth / (xMax - xMin);
+            const yScale = (y) => margin + effectiveHeight - (y - yMin) * effectiveHeight / (yMax - yMin);
+            
+            // Draw axes
+            d3svg.append('line')
+                .attr('x1', xScale(xMin)).attr('y1', yScale(0))
+                .attr('x2', xScale(xMax)).attr('y2', yScale(0))
+                .attr('stroke', '#ddd').attr('stroke-width', 1);
+            d3svg.append('line')
+                .attr('x1', xScale(0)).attr('y1', yScale(yMin))
+                .attr('x2', xScale(0)).attr('y2', yScale(yMax))
+                .attr('stroke', '#ddd').attr('stroke-width', 1);
+            
+            // Draw the conic section
+            const points = generateConicPoints(part, xMin, xMax, yMin, yMax);
+            
+            if (points.length > 0) {
+                const line = d3.line()
+                    .x(d => xScale(d.x))
+                    .y(d => yScale(d.y))
+                    .curve(d3.curveLinear);
+                
+                d3svg.append('path')
+                    .datum(points)
+                    .attr('d', line)
+                    .attr('fill', 'none')
+                    .attr('stroke', part.color)
+                    .attr('stroke-width', 2);
+            }
+        }
+        
+        function generateConicPoints(part, xMin, xMax, yMin, yMax) {
+            const points = [];
+            const step = 0.2;
+            
+            switch (part.type) {
+                case 'parabola':
+                    for (let x = xMin; x <= xMax; x += step) {
+                        const y = (x * x) / part.a;
+                        if (y >= yMin && y <= yMax) {
+                            points.push({ x, y });
+                        }
+                    }
+                    break;
+                    
+                case 'circle':
+                    for (let angle = 0; angle <= 2 * Math.PI; angle += 0.1) {
+                        const x = part.r * Math.cos(angle);
+                        const y = part.r * Math.sin(angle);
+                        if (x >= xMin && x <= xMax && y >= yMin && y <= yMax) {
+                            points.push({ x, y });
+                        }
+                    }
+                    break;
+                    
+                case 'ellipse':
+                    for (let angle = 0; angle <= 2 * Math.PI; angle += 0.1) {
+                        const x = part.a * Math.cos(angle);
+                        const y = part.b * Math.sin(angle);
+                        if (x >= xMin && x <= xMax && y >= yMin && y <= yMax) {
+                            points.push({ x, y });
+                        }
+                    }
+                    break;
+                    
+                case 'hyperbola':
+                    // Draw both branches
+                    if (part.orientation === 'horizontal') {
+                        // Right branch
+                        for (let y = yMin; y <= yMax; y += step) {
+                            const x = part.a * Math.sqrt(1 + (y * y) / (part.b * part.b));
+                            if (x >= xMin && x <= xMax) {
+                                points.push({ x, y });
+                            }
+                        }
+                        // Left branch
+                        for (let y = yMin; y <= yMax; y += step) {
+                            const x = -part.a * Math.sqrt(1 + (y * y) / (part.b * part.b));
+                            if (x >= xMin && x <= xMax) {
+                                points.push({ x, y });
+                            }
+                        }
+                    } else {
+                        // Upper branch
+                        for (let x = xMin; x <= xMax; x += step) {
+                            const y = part.a * Math.sqrt(1 + (x * x) / (part.b * part.b));
+                            if (y >= yMin && y <= yMax) {
+                                points.push({ x, y });
+                            }
+                        }
+                        // Lower branch
+                        for (let x = xMin; x <= xMax; x += step) {
+                            const y = -part.a * Math.sqrt(1 + (x * x) / (part.b * part.b));
+                            if (y >= yMin && y <= yMax) {
+                                points.push({ x, y });
+                            }
+                        }
+                    }
+                    break;
+            }
+            
+            return points;
+        }
+        
+        function addPartToAssembly(partIndex) {
+            const part = partsLibrary[partIndex];
+            selectedParts.push({ ...part, id: Date.now() + Math.random() });
+            
+            updateAssemblyDisplay();
+            updateAssemblyInfo();
+            
+            // Update UI
+            document.getElementById('exportBtn').disabled = selectedParts.length === 0;
+            document.getElementById('saveBtn').disabled = selectedParts.length === 0;
+        }
+        
+        function updateAssemblyDisplay() {
+            const container = document.getElementById('assemblyCanvas');
+            container.innerHTML = '';
+            
+            if (selectedParts.length === 0) {
+                container.innerHTML = '<p style="color: #888; margin-top: 20px;">Click parts above to add them to your assembly</p>';
+                return;
+            }
+            
+            // Create assembly SVG
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', 600)
+                .attr('height', 400)
+                .style('border', '1px solid #ddd')
+                .style('border-radius', '4px');
+            
+            // Set up coordinate system
+            const xMin = -15, xMax = 15, yMin = -10, yMax = 10;
+            const margin = 30;
+            const effectiveWidth = 600 - 2 * margin;
+            const effectiveHeight = 400 - 2 * margin;
+            
+            const xScale = (x) => margin + (x - xMin) * effectiveWidth / (xMax - xMin);
+            const yScale = (y) => margin + effectiveHeight - (y - yMin) * effectiveHeight / (yMax - yMin);
+            
+            // Draw grid
+            const gridGroup = svg.append('g').attr('class', 'grid');
+            for (let i = -15; i <= 15; i++) {
+                if (i !== 0) {
+                    gridGroup.append('line')
+                        .attr('x1', xScale(i)).attr('y1', yScale(yMin))
+                        .attr('x2', xScale(i)).attr('y2', yScale(yMax))
+                        .attr('stroke', '#f0f0f0').attr('stroke-width', 0.5);
+                }
+            }
+            for (let i = -10; i <= 10; i++) {
+                if (i !== 0) {
+                    gridGroup.append('line')
+                        .attr('x1', xScale(xMin)).attr('y1', yScale(i))
+                        .attr('x2', xScale(xMax)).attr('y2', yScale(i))
+                        .attr('stroke', '#f0f0f0').attr('stroke-width', 0.5);
+                }
+            }
+            
+            // Draw axes
+            svg.append('line')
+                .attr('x1', xScale(xMin)).attr('y1', yScale(0))
+                .attr('x2', xScale(xMax)).attr('y2', yScale(0))
+                .attr('stroke', '#888').attr('stroke-width', 1.5);
+            svg.append('line')
+                .attr('x1', xScale(0)).attr('y1', yScale(yMin))
+                .attr('x2', xScale(0)).attr('y2', yScale(yMax))
+                .attr('stroke', '#888').attr('stroke-width', 1.5);
+            
+            // Draw each selected part
+            selectedParts.forEach(part => {
+                const points = generateConicPoints(part, xMin, xMax, yMin, yMax);
+                
+                if (points.length > 0) {
+                    const line = d3.line()
+                        .x(d => xScale(d.x))
+                        .y(d => yScale(d.y))
+                        .curve(d3.curveLinear);
+                    
+                    svg.append('path')
+                        .datum(points)
+                        .attr('d', line)
+                        .attr('fill', 'none')
+                        .attr('stroke', part.color)
+                        .attr('stroke-width', 2)
+                        .attr('opacity', 0.8);
+                }
+            });
+        }
+        
+        function updateAssemblyInfo() {
+            const container = document.getElementById('assemblyInfo');
+            
+            if (selectedParts.length === 0) {
+                container.innerHTML = '<p>No parts selected yet.</p>';
+                return;
+            }
+            
+            const partsList = selectedParts.map(part => 
+                `<li><strong>${part.label}</strong>: ${part.equation}</li>`
+            ).join('');
+            
+            container.innerHTML = `
+                <p><strong>Parts in assembly:</strong> ${selectedParts.length}</p>
+                <ul>${partsList}</ul>
+            `;
+        }
+        
+        // Event handlers
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            selectedParts = [];
+            updateAssemblyDisplay();
+            updateAssemblyInfo();
+            document.getElementById('exportBtn').disabled = true;
+            document.getElementById('saveBtn').disabled = true;
+        });
+        
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            // TODO: Implement SVG export
+            alert('SVG export feature coming soon!');
+        });
+        
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            // TODO: Implement design saving
+            alert('Save design feature coming soon!');
+        });
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            generatePartsLibrary();
+            updateAssemblyDisplay();
+        });
+    </script>
+</body>
+</html>
