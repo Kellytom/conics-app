@@ -1,0 +1,480 @@
+---
+title: Angels Explorer
+description: Mathematical beauty through angel-themed visualizations and interactive features
+---
+
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+
+<a href="/" class="back-button">← Back to Home</a>
+
+# 😇 Angels Explorer
+
+<span class="priority-green">●</span> **Status: Interactive & Beautiful**
+
+Experience mathematical beauty through angel-themed visualizations that combine elegant mathematics with stunning visual design. Explore celestial patterns, harmonic curves, and divine geometries through interactive controls.
+
+<Aside type="tip">
+**Spiritual Mathematics**: This section combines the precision of mathematics with the beauty of angelic themes, creating visualizations that are both educational and inspiring.
+</Aside>
+
+## ✨ Interactive Angel Visualization
+
+<div id="angel-container" class="conic-grid">
+  <div class="interactive-controls">
+    <h3><span class="priority-green">●</span> Celestial Parameters</h3>
+    <div class="control-group">
+      <label for="angel-wings">Wing Span:</label>
+      <input type="range" id="angel-wings" min="1" max="10" step="0.5" value="5" class="interactive-control">
+      <span id="angel-wings-value">5.0</span>
+    </div>
+    <div class="control-group">
+      <label for="angel-halo">Halo Radius:</label>
+      <input type="range" id="angel-halo" min="0.5" max="5" step="0.1" value="2" class="interactive-control">
+      <span id="angel-halo-value">2.0</span>
+    </div>
+    <div class="control-group">
+      <label for="angel-frequency">Harmonic Frequency:</label>
+      <input type="range" id="angel-frequency" min="1" max="20" step="1" value="8" class="interactive-control">
+      <span id="angel-frequency-value">8</span>
+    </div>
+    <div class="control-group">
+      <label for="angel-phase">Phase Shift:</label>
+      <input type="range" id="angel-phase" min="0" max="360" step="1" value="0" class="interactive-control">
+      <span id="angel-phase-value">0°</span>
+    </div>
+  </div>
+  
+  <div class="visualization-area">
+    <svg id="angel-svg" width="500" height="500" viewBox="-10 -10 20 20">
+      <!-- Background gradient -->
+      <defs>
+        <radialGradient id="celestialGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8" />
+          <stop offset="50%" style="stop-color:#e8f4f8;stop-opacity:0.4" />
+          <stop offset="100%" style="stop-color:#d5e8f3;stop-opacity:0.1" />
+        </radialGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="0.3" result="coloredBlur"/>
+          <feMerge> 
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      
+      <!-- Celestial background -->
+      <circle cx="0" cy="0" r="10" fill="url(#celestialGlow)" />
+      
+      <!-- Angel components -->
+      <g id="angel-halo"></g>
+      <g id="angel-wings"></g>
+      <g id="angel-body"></g>
+      <g id="harmonic-patterns"></g>
+    </svg>
+  </div>
+</div>
+
+## 👼 Mathematical Angel Components
+
+<CardGrid stagger>
+  <Card title="😇 Halo Mathematics" icon="star">
+    <span class="priority-green">●</span> **Perfect Circles**
+    
+    The angel's halo is mathematically perfect:
+    
+    <div class="formula-display">
+    <span class="math-block">x² + y² = r²</span>
+    </div>
+    
+    Where r is the halo radius, creating divine symmetry.
+  </Card>
+
+  <Card title="🪶 Wing Geometry" icon="puzzle">
+    <span class="priority-green">●</span> **Parametric Curves**
+    
+    Angel wings use parametric equations:
+    
+    <div class="formula-display">
+    <span class="math-block">x = a·cos(t)·(1 + cos(nt))</span>
+    <span class="math-block">y = a·sin(t)·(1 + cos(nt))</span>
+    </div>
+    
+    Creating graceful, flowing wing shapes.
+  </Card>
+
+  <Card title="🎵 Harmonic Patterns" icon="heart">
+    <span class="priority-green">●</span> **Celestial Harmonics**
+    
+    Background patterns use harmonic functions:
+    
+    <div class="formula-display">
+    <span class="math-block">f(θ) = sin(nθ + φ)</span>
+    </div>
+    
+    Where n is frequency and φ is phase shift.
+  </Card>
+
+  <Card title="✨ Divine Ratios" icon="approve-check">
+    <span class="priority-blue">●</span> **Golden Proportion**
+    
+    Incorporates the golden ratio (φ = 1.618...):
+    
+    <div class="formula-display">
+    <span class="math-block">φ = (1 + √5) / 2</span>
+    </div>
+    
+    For naturally pleasing proportions.
+  </Card>
+</CardGrid>
+
+## 🎨 Visual Symphony
+
+### Color Palette
+- <span style="color: #f8f9fa; font-weight: bold; background: #333; padding: 2px 6px; border-radius: 3px;">●</span> **Pure White** - Divine light (#f8f9fa)
+- <span style="color: #e3f2fd; font-weight: bold;">●</span> **Celestial Blue** - Heavenly atmosphere (#e3f2fd)
+- <span style="color: #fff3e0; font-weight: bold;">●</span> **Golden Glow** - Divine radiance (#fff3e0)
+- <span style="color: #f3e5f5; font-weight: bold;">●</span> **Angelic Purple** - Spiritual essence (#f3e5f5)
+- <span style="color: #e8f5e8; font-weight: bold;">●</span> **Peaceful Green** - Natural harmony (#e8f5e8)
+
+### Animation Effects
+- <span class="priority-green">●</span> **Gentle Floating** - Subtle vertical oscillation
+- <span class="priority-green">●</span> **Wing Flutter** - Periodic wing movements
+- <span class="priority-green">●</span> **Halo Glow** - Pulsing luminescence
+- <span class="priority-green">●</span> **Harmonic Waves** - Flowing background patterns
+
+## 🔮 Spiritual Mathematics
+
+<Aside type="note">
+**Sacred Geometry**: Angels in art and spirituality often incorporate mathematical principles that humans find inherently beautiful - circles, golden ratios, and harmonic proportions that resonate with our sense of divine perfection.
+</Aside>
+
+### Divine Proportions
+The mathematical relationships in this visualization reflect principles found in:
+
+- <span class="priority-blue">●</span> **Architecture** - Cathedral designs and sacred spaces
+- <span class="priority-blue">●</span> **Nature** - Flower petals, shell spirals, and tree branches
+- <span class="priority-blue">●</span> **Art** - Renaissance paintings and classical sculptures
+- <span class="priority-blue">●</span> **Music** - Harmonic intervals and resonant frequencies
+
+### Mathematical Beauty
+- <span class="priority-green">●</span> **Symmetry** - Bilateral and radial symmetry in angel forms
+- <span class="priority-green">●</span> **Periodicity** - Regular patterns in wing movements
+- <span class="priority-green">●</span> **Harmony** - Mathematical relationships that please the eye
+- <span class="priority-green">●</span> **Transcendence** - Complex forms emerging from simple equations
+
+## 🎼 Interactive Features
+
+### Real-time Controls
+- <span class="priority-green">●</span> **Wing Span** - Adjust the size and reach of angel wings
+- <span class="priority-green">●</span> **Halo Radius** - Control the divine aura size
+- <span class="priority-green">●</span> **Harmonic Frequency** - Modify background wave patterns
+- <span class="priority-green">●</span> **Phase Shift** - Rotate harmonic relationships
+
+### Visual Feedback
+- <span class="priority-green">●</span> **Smooth Transitions** - All changes animate smoothly
+- <span class="priority-green">●</span> **Real-time Updates** - Immediate visual response
+- <span class="priority-green">●</span> **Mathematical Precision** - Accurate curve calculations
+- <span class="priority-green">●</span> **Responsive Design** - Adapts to screen size
+
+## 🚀 Explore Further
+
+<CardGrid>
+  <Card title="Return to Parabolas" icon="right-arrow">
+    <span class="priority-green">●</span> **Mathematical Foundation**
+    
+    Return to the mathematical precision of quadratic curves.
+    
+    [Explore Parabolas →](/parabolas/)
+  </Card>
+
+  <Card title="View Gallery" icon="star">
+    <span class="priority-green">●</span> **Art Collection**
+    
+    See more beautiful mathematical art and visualizations.
+    
+    [Browse Gallery →](/gallery/)
+  </Card>
+
+  <Card title="Circle Studies" icon="approve-check">
+    <span class="priority-yellow">●</span> **Perfect Forms**
+    
+    Explore the mathematical perfection of circular geometry.
+    
+    [Study Circles →](/circles/)
+  </Card>
+</CardGrid>
+
+## 📚 Educational Insights
+
+### Learning Objectives
+After exploring the Angels section, you will understand:
+
+1. <span class="priority-green">●</span> **Parametric Equations** - How curves are defined by parameter functions
+2. <span class="priority-green">●</span> **Harmonic Functions** - Sine and cosine in creating patterns
+3. <span class="priority-green">●</span> **Sacred Geometry** - Mathematical principles in art and nature
+4. <span class="priority-blue">●</span> **Golden Ratio** - Divine proportions in mathematics
+
+### Practical Applications
+- <span class="priority-blue">●</span> **Computer Graphics** - Curve generation and animation
+- <span class="priority-blue">●</span> **Game Development** - Character movement and effects
+- <span class="priority-blue">●</span> **Art and Design** - Creating pleasing visual compositions
+- <span class="priority-blue">●</span> **Architecture** - Incorporating natural proportions
+
+<script type="module">
+// Angel visualization script
+import * as d3 from 'https://cdn.skypack.dev/d3@7';
+
+class AngelExplorer {
+  constructor() {
+    this.svg = d3.select('#angel-svg');
+    this.width = 500;
+    this.height = 500;
+    
+    this.wingSpan = 5;
+    this.haloRadius = 2;
+    this.frequency = 8;
+    this.phase = 0;
+    
+    this.initializeControls();
+    this.updateVisualization();
+    this.startAnimation();
+  }
+  
+  initializeControls() {
+    document.getElementById('angel-wings').addEventListener('input', (e) => {
+      this.wingSpan = parseFloat(e.target.value);
+      document.getElementById('angel-wings-value').textContent = this.wingSpan.toFixed(1);
+      this.updateVisualization();
+    });
+    
+    document.getElementById('angel-halo').addEventListener('input', (e) => {
+      this.haloRadius = parseFloat(e.target.value);
+      document.getElementById('angel-halo-value').textContent = this.haloRadius.toFixed(1);
+      this.updateVisualization();
+    });
+    
+    document.getElementById('angel-frequency').addEventListener('input', (e) => {
+      this.frequency = parseInt(e.target.value);
+      document.getElementById('angel-frequency-value').textContent = this.frequency;
+      this.updateVisualization();
+    });
+    
+    document.getElementById('angel-phase').addEventListener('input', (e) => {
+      this.phase = parseInt(e.target.value);
+      document.getElementById('angel-phase-value').textContent = this.phase + '°';
+      this.updateVisualization();
+    });
+  }
+  
+  updateVisualization() {
+    this.drawHalo();
+    this.drawWings();
+    this.drawBody();
+    this.drawHarmonicPatterns();
+  }
+  
+  drawHalo() {
+    const haloGroup = this.svg.select('#angel-halo');
+    haloGroup.selectAll('*').remove();
+    
+    // Main halo circle
+    haloGroup.append('circle')
+      .attr('cx', 0)
+      .attr('cy', -6)
+      .attr('r', this.haloRadius)
+      .attr('fill', 'none')
+      .attr('stroke', '#ffd700')
+      .attr('stroke-width', 0.3)
+      .attr('filter', 'url(#glow)')
+      .attr('opacity', 0.8);
+    
+    // Inner glow
+    haloGroup.append('circle')
+      .attr('cx', 0)
+      .attr('cy', -6)
+      .attr('r', this.haloRadius * 0.7)
+      .attr('fill', 'none')
+      .attr('stroke', '#ffeb3b')
+      .attr('stroke-width', 0.1)
+      .attr('opacity', 0.6);
+  }
+  
+  drawWings() {
+    const wingsGroup = this.svg.select('#angel-wings');
+    wingsGroup.selectAll('*').remove();
+    
+    const wingPath = d3.line()
+      .x(d => d.x)
+      .y(d => d.y)
+      .curve(d3.curveBasis);
+    
+    // Left wing
+    const leftWingData = this.generateWingData(-1);
+    wingsGroup.append('path')
+      .datum(leftWingData)
+      .attr('d', wingPath)
+      .attr('fill', 'rgba(255, 255, 255, 0.7)')
+      .attr('stroke', '#e3f2fd')
+      .attr('stroke-width', 0.2)
+      .attr('filter', 'url(#glow)');
+    
+    // Right wing
+    const rightWingData = this.generateWingData(1);
+    wingsGroup.append('path')
+      .datum(rightWingData)
+      .attr('d', wingPath)
+      .attr('fill', 'rgba(255, 255, 255, 0.7)')
+      .attr('stroke', '#e3f2fd')
+      .attr('stroke-width', 0.2)
+      .attr('filter', 'url(#glow)');
+  }
+  
+  generateWingData(side) {
+    const data = [];
+    const steps = 100;
+    
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * Math.PI * 2;
+      const r = this.wingSpan * (1 + 0.5 * Math.cos(3 * t));
+      const x = side * r * Math.cos(t) * 0.8;
+      const y = r * Math.sin(t) * 0.4 - 2;
+      data.push({ x, y });
+    }
+    
+    return data;
+  }
+  
+  drawBody() {
+    const bodyGroup = this.svg.select('#angel-body');
+    bodyGroup.selectAll('*').remove();
+    
+    // Head
+    bodyGroup.append('circle')
+      .attr('cx', 0)
+      .attr('cy', -4)
+      .attr('r', 1.2)
+      .attr('fill', '#fff3e0')
+      .attr('stroke', '#f5f5f5')
+      .attr('stroke-width', 0.1);
+    
+    // Body
+    bodyGroup.append('ellipse')
+      .attr('cx', 0)
+      .attr('cy', 0)
+      .attr('rx', 1.5)
+      .attr('ry', 3)
+      .attr('fill', '#ffffff')
+      .attr('stroke', '#f0f0f0')
+      .attr('stroke-width', 0.1)
+      .attr('opacity', 0.9);
+  }
+  
+  drawHarmonicPatterns() {
+    const patternGroup = this.svg.select('#harmonic-patterns');
+    patternGroup.selectAll('*').remove();
+    
+    const phaseRad = (this.phase * Math.PI) / 180;
+    
+    for (let layer = 0; layer < 3; layer++) {
+      const radius = 8 - layer * 2;
+      const points = [];
+      
+      for (let angle = 0; angle < Math.PI * 2; angle += 0.1) {
+        const r = radius + Math.sin(this.frequency * angle + phaseRad) * 0.5;
+        const x = r * Math.cos(angle);
+        const y = r * Math.sin(angle);
+        points.push({ x, y });
+      }
+      
+      const line = d3.line()
+        .x(d => d.x)
+        .y(d => d.y)
+        .curve(d3.curveLinear);
+      
+      patternGroup.append('path')
+        .datum(points)
+        .attr('d', line)
+        .attr('fill', 'none')
+        .attr('stroke', layer % 2 ? '#e8f5e8' : '#f3e5f5')
+        .attr('stroke-width', 0.1)
+        .attr('opacity', 0.3 - layer * 0.1);
+    }
+  }
+  
+  startAnimation() {
+    let time = 0;
+    
+    const animate = () => {
+      time += 0.02;
+      
+      // Gentle floating animation
+      this.svg.select('#angel-body')
+        .attr('transform', `translate(0, ${Math.sin(time) * 0.3})`);
+      
+      // Halo glow pulsing
+      this.svg.select('#angel-halo circle')
+        .attr('opacity', 0.6 + Math.sin(time * 2) * 0.2);
+      
+      requestAnimationFrame(animate);
+    };
+    
+    animate();
+  }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  new AngelExplorer();
+});
+</script>
+
+<style>
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.control-group label {
+  min-width: 150px;
+  font-weight: 500;
+  color: var(--sl-color-accent);
+}
+
+.control-group input[type="range"] {
+  flex: 1;
+  margin: 0 1rem;
+}
+
+.control-group span {
+  min-width: 50px;
+  font-family: monospace;
+  font-weight: bold;
+  color: var(--sl-color-accent);
+}
+
+.visualization-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#angel-svg {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e8f4f8 50%, #d5e8f3 100%);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.1);
+}
+
+@media (max-width: 768px) {
+  .conic-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  #angel-svg {
+    width: 100%;
+    height: auto;
+  }
+}
+</style>

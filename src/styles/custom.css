@@ -1,0 +1,213 @@
+/* Custom Starlight CSS with Color Coding System */
+
+/* Color Coding System - Unicode Colored Indicators */
+.priority-red { color: #e74c3c; }
+.priority-orange { color: #f39c12; }
+.priority-yellow { color: #f1c40f; }
+.priority-green { color: #27ae60; }
+.priority-blue { color: #3498db; }
+.priority-purple { color: #9b59b6; }
+
+/* Enhanced indicators for emphasis */
+.indicator-critical { 
+  color: #e74c3c; 
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(231, 76, 60, 0.3);
+}
+
+.indicator-important { 
+  color: #f39c12; 
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(243, 156, 18, 0.3);
+}
+
+.indicator-moderate { 
+  color: #f1c40f; 
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(241, 196, 15, 0.3);
+}
+
+.indicator-success { 
+  color: #27ae60; 
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(39, 174, 96, 0.3);
+}
+
+.indicator-info { 
+  color: #3498db; 
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(52, 152, 219, 0.3);
+}
+
+/* Conic-specific styling */
+.conic-curve {
+  stroke-width: 2.5;
+  fill: none;
+  opacity: 0.8;
+}
+
+.parabola-curve { 
+  stroke: #e74c3c; 
+}
+
+.ellipse-curve { 
+  stroke: #3498db; 
+}
+
+.circle-curve { 
+  stroke: #27ae60; 
+}
+
+.hyperbola-curve { 
+  stroke: #f39c12; 
+}
+
+/* Mathematical equation styling */
+.formula-display {
+  font-family: 'Courier New', monospace;
+  font-size: 1.1em;
+  background: rgba(52, 152, 219, 0.1);
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  border-left: 4px solid #3498db;
+  margin: 1rem 0;
+}
+
+/* Interactive elements */
+.interactive-control {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.interactive-control:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Navigation enhancements */
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(52, 152, 219, 0.1);
+  border: 1px solid #3498db;
+  border-radius: 0.375rem;
+  color: #3498db;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.back-button:hover {
+  background: #3498db;
+  color: white;
+  transform: translateX(-2px);
+}
+
+/* Responsive grid for visualizations */
+.conic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+/* Print optimizations */
+@media print {
+  .priority-red, .priority-orange, .priority-yellow, 
+  .priority-green, .priority-blue, .priority-purple {
+    color: black !important;
+  }
+  
+  .conic-curve {
+    stroke: black !important;
+  }
+  
+  .back-button, .interactive-control {
+    display: none !important;
+  }
+}
+
+/* Dark theme adjustments */
+:root[data-theme='dark'] {
+  --sl-color-accent: #3498db;
+  --sl-color-accent-low: rgba(52, 152, 219, 0.2);
+  --sl-color-accent-high: rgba(52, 152, 219, 0.8);
+}
+
+/* Custom starlight sidebar styling */
+.sidebar-content {
+  padding: 1rem;
+}
+
+.sidebar-group {
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-group h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--sl-color-accent);
+}
+
+/* Mathematical notation enhancements */
+.math-inline {
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 1.1em;
+}
+
+.math-block {
+  font-family: 'Times New Roman', serif;
+  font-size: 1.2em;
+  text-align: center;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: rgba(52, 152, 219, 0.05);
+  border-radius: 0.5rem;
+}
+
+/* Icon enhancements */
+.emoji-large {
+  font-size: 2em;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.emoji-inline {
+  font-size: 1.2em;
+  margin-right: 0.25rem;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+}
+
+.status-completed {
+  background: rgba(39, 174, 96, 0.2);
+  color: #27ae60;
+}
+
+.status-in-progress {
+  background: rgba(243, 156, 18, 0.2);
+  color: #f39c12;
+}
+
+.status-planned {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+}
